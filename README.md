@@ -1,62 +1,98 @@
-# Projet Interconnexion
+# Projet d’Interconnexion dans Internet – Système Autonome (AS)
+
+## Présentation du projet
+Ce projet s’inscrit dans le cadre de l’unité *Internet et Graphes – 2SN parcours A/R/T*.  
+L’objectif est de concevoir et de déployer un **système autonome (AS)** complet proposant des **services d’accès Internet** pour particuliers et entreprises.  
+
+Le réseau mis en place intègre plusieurs fonctionnalités essentielles :
+- Routage dynamique entre les différents routeurs du système.
+- Gestion de la **sécurité** et des accès internes.
+- Mise en place d’un **serveur DNS** et d’un **service DHCP**.
+- Déploiement d’un **VPN** entre deux sites d’entreprise.
+- Interconnexion de l’AS avec les autres systèmes autonomes développés par les autres groupes.
+
+---
+
+## Architecture générale
+L’architecture globale comprend :
+
+- Un **AS principal** jouant le rôle de fournisseur de services réseau.  
+- Un **site d’entreprise principal** et un **site secondaire**, reliés par un tunnel VPN.  
+- Un **serveur DNS interne** pour la résolution des noms locaux.  
+- Un **client particulier** simulant un accès Internet résidentiel.  
+- Une **interconnexion inter-AS** avec les autres groupes pour permettre la communication entre entreprises et particuliers.  
+
+*Un schéma d’architecture détaillé est disponible dans le dossier `/docs/`.*
+
+---
+
+## Outils et technologies utilisées
+| Outil / Technologie | Rôle |
+|----------------------|------|
+| **Docker** | Déploiement reproductible et modulaire des services réseau |
+| **GitHub** | Gestion du code, des issues et du suivi des tâches |
+
+---
+
+## Installation et déploiement
+
+### Prérequis
+- Docker et Docker Compose installés  
+- Accès au dépôt GitHub du projet  
+- Linux ou MACOS recommandé
+
+Chaque dossier de service contient son propre `README.md` avec les instructions spécifiques (DNS, VPN, routage, etc.).
+
+---
+
+## Structure du dépôt
+```
+.
+├── tests/               # Scripts et résultats de tests
+├── docs/                # Documentation et schémas d’architecture
+├── CODE_GUIDELINES.md   # Règles de développement et de documentation
+└── README.md            # Présentation du projet
+```
+
+---
+
+## Méthodologie de travail
+Afin de faciliter la collaboration, nous avons adopté une approche de travail inspirée de la méthodologie Agile :
+
+- **Réunions toutes les deux semaines** pour faire le point sur l’avancement et les choix techniques.  
+- **Issues GitHub** utilisées pour suivre les tâches, les décisions et les responsabilités.  
+- **Branche par fonctionnalité** pour assurer un développement parallèle propre et traçable.  
+- Chaque issue se conclut par :
+  - un `README.md` documenté,  
+  - des tests de validation,  
+  - une procédure de déploiement minimale.  
+
+---
+
+## Équipe et répartition des rôles
+| Membre | Rôle principal | Responsabilités |
+|--------|----------------|----------------|
+| Achille | x | x |
+| Arthur | x | x |
+| Lilian | x | x |
+| Louan | x | x |
+| Paul | x | x |
+| Louis | x | x |
+
+---
 
 ## Code Guidelines
-
-### Objectif
-L’objectif de cette section est d’assurer une cohérence dans la manière de développer, documenter et déployer les différentes tâches du projet.  
-Chaque membre est responsable de la partie qu’il implémente et des choix techniques faits (ex : protocole de routage) jusqu’à la documentation et aux tests associés.
-
----
-
-### Structure et organisation du code
-- Chaque fonctionnalité doit être développée dans un dossier dédié, contenant un fichier `README.md` décrivant :
-  - son rôle dans le projet,  
-  - ses dépendances (images Docker, scripts, paquets, etc.),
-  - les choix techniques associés  
-  - la méthode de déploiement (commande `docker run`, `docker-compose`, ou autre).  
-- Les noms de fichiers, variables et dossiers doivent être explicites et cohérents.  
+Les règles de développement, de documentation et de versionnement sont détaillées dans le fichier [`CODE_GUIDELINES.md`](./CODE_GUIDELINES.md).  
+Elles couvrent :
+- L’organisation du code et des dossiers  
+- Les conventions Git / GitHub (branches, commits, issues)  
+- Les tests et la documentation  
+- Les bonnes pratiques de traçabilité et de maintenance  
 
 ---
 
-### Bonnes pratiques Git / GitHub
-- Chaque fonctionnalité ou correction est développée sur une **branche dédiée**, liée à une issue (ex : `feature/vpn-setup`, `fix/dhcp-config`). (Pas obligatoire) 
-- Les **commits** doivent être courts, clairs et descriptifs (ex : `Add OSPF configuration for AS1 router`).  
-- Les **issues GitHub** servent à :
-  - décrire la tâche à réaliser,  
-  - suivre l’avancement,  
-  - attribuer un responsable,  
-  - documenter les choix faits.  
-
----
-
-### Documentation et tests
-- Chaque issue doit se conclure par :
-  - un `README.md` documenté,  
-  - des **tests** ou captures prouvant le bon fonctionnement,  
-  - une **procédure de déploiement minimale** (script, commande ou fichier Docker).  
-- Les configurations doivent être testées dans un environnement isolé avant intégration à l’infrastructure principale.  
-- Les dépendances logicielles (versions, images Docker, bibliothèques, etc.) seront mentionnés  
-
----
-
-### Qualité et traçabilité
-- Les décisions techniques importantes doivent être documentées dans le dépôt (`/docs` ou via issues GitHub).  
-- Les fichiers générés automatiquement (logs, binaires, etc.) doivent être exclus avec `.gitignore`.  
-- Les preuves de bon fonctionnement (captures Wireshark, résultats de ping, tables de routage, etc.) peuvent être stockées dans le dossier `/tests`.  
-
----
-
-### Organisation et communication
-- Le suivi du projet se fait via GitHub (issues, branches, pull requests).  
-- Des réunions d’équipe sont tenues **toutes les deux semaines** pour :
-  - faire le point sur les tâches réalisées,  
-  - identifier les problèmes rencontrés,  
-  - planifier les étapes suivantes.  
-- Les décisions et comptes rendus sont centralisés dans le dépôt.
-
----
-
-## Esprit général
-L’objectif n’est pas seulement d’obtenir un résultat fonctionnel, mais de produire un code **lisible, réutilisable et reproductible**.  
+## Références
+- **Sujet officiel** : *Projet d’Interconnexion dans Internet – 2SN 2025-2026*  
+- [Documentation Docker](https://docs.docker.com)  
 
 
