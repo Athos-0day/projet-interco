@@ -11,6 +11,9 @@ if [ -z "$1" ]; then
 fi
 PARTICULIER_ID=$1
 
+# On supprime les namespaces créé
+sudo ip netns delete particulier${PARTICULIER_ID}_box_tmp
+
 # On supprime les dockers du réseau
 docker kill particulier${PARTICULIER_ID}_box
 docker kill particulier${PARTICULIER_ID}_t1

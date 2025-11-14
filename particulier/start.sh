@@ -1,14 +1,13 @@
 #!/bin/bash
 
 # Script de démarrage d'un réseau de particulier
-# Usage: ./start.sh <id particulier>
+# Usage: ./start.sh <id particulier> [<conteneur routeur FAI> <interface routeur FAI>]
 # Le réseau de particulier est composé d'une box et de 2 terminaux.
 # La box utilise DHCP et NAT
 
-# On vérifie si l'identifiant du particulier est donné
-if [ -z "$1" ]; then
-    echo "Usage: $0 <id particulier>"
-    echo "Il faut donner un identifiant (A par exemple) au particulier."
+# Si on a le bon nombre d'arguments
+if [ "$#" -ne 1 ] && [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <id particulier> [<conteneur routeur FAI> <interface routeur FAI>]"
     exit 1
 fi
 
@@ -43,6 +42,17 @@ addNetnsList() {
 addNetnsList particulier${PARTICULIER_ID}_box
 addNetnsList particulier${PARTICULIER_ID}_t1
 addNetnsList particulier${PARTICULIER_ID}_t2
+
+# ==== Creation de l'interface exterieure ETH0 de la box ====
+# On créé un namespace pour stocker l'extrémité du lien non attribué
+sudo ip netns add particulier${PARTICULIER_ID}_box_tmp
+# On créé le lien veth
+sudo ip netns exec particulier${PARTICULIER_ID}_box ip link add eth0 type veth peer name eth0 netns particulier${PARTICULIER_ID}_box_tmp
+# Si le conteneur routeur FAI est donné en arguments on le connecte
+if [ "$#" -eq 3 ]; then
+    sudo ip netns exec particulier${PARTICULIER_ID}_box_tmp ip link set eth0 name $3 netns $2 
+fi
+# ========
 
 # Creation d'un lien ethernet virtuel entre 2 conteneur docker
 #   $1: Nom du 1er Docker
