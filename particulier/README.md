@@ -6,15 +6,26 @@ Un réseau de particulier est composé de :
 
 Les réseaux de particuliers possède un identifiant (A,B,C,...) défini par l'utilisateur qui permet de les différenciers.
 
+Voici un schéma d'un réseau obtenu en faisant `./start.sh A`
+![](docs/ReseauParticulierSchema.png "Schema du réseau")
+
 ## Procédure de déploiement
 
 Dépendances :
  - Docker
 
-Pour démarrer un réseau de particulier A :
+Pour démarrer un réseau de particulier A isolé :
 ```bash
 chmod u+x ./start.sh
 ./start.sh A
+```
+
+Pour démarrer un réseau de particulier A connecté à un routeur extérieur créé automatiquement regardez dans le dossier [tests](./tests).
+
+Pour démarrer un réseau de particulier A connecté à un routeur extérieur R que vous avez préalablement créé :
+```bash
+chmod u+x ./start.sh
+./start.sh A R <interface à utilisée sur R>
 ```
 
 Pour arrêter un réseau de particulier A :
