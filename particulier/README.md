@@ -1,7 +1,7 @@
 # Réseau de particulier
 
 Un réseau de particulier est composé de :
-- Une box jouant le rôle de **serveur DHCP** permettant d'attribuer des adresses IP dynamiques et de point d'accès vers le réseau  de l'opérateur.
+- Une box jouant le rôle de **serveur DHCP** permettant d'attribuer des adresses IP dynamiques aux machines de la LAN et de point d'accès via **NAT** vers le réseau  de l'opérateur.
 - De deux machines connectées à la box.
 
 Les réseaux de particuliers possède un identifiant (A,B,C,...) défini par l'utilisateur qui permet de les différenciers.
@@ -53,4 +53,4 @@ sudo ip netns exec nom_machine wireshark
 
 ## Configuration
 
-Les images utilisées sont définies dans le dossier images, les scripts de démarrage utilisés sont définis dans le dossier scripts et les fichiers de configurations dans le dossier configs.
+Le **DHCP** est configuré dans le fichier [dhcpd.conf](./configs/dhcpd.conf) et le **NAT** est configuré dans [scrit_box.sh](./scripts/script_box.sh).
