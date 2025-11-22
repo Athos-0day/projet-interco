@@ -1,0 +1,21 @@
+acl "mylan" {
+    192.168.49.0/24;
+};
+
+view "internal" {
+    match-clients { mylan; };
+
+    zone "site.lan" {
+        type master;
+        file "/etc/bind/zones/db.site.lan.internal";
+    };
+};
+
+view "external" {
+    match-clients { any; };
+
+    zone "site.lan" {
+        type master;
+        file "/etc/bind/zones/db.site.lan.external";
+    };
+};
