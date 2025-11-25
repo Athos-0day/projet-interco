@@ -1,5 +1,16 @@
 #!/bin/bash
 
+### --------------------------
+### Récupération nom du service
+### --------------------------
+if [ "$#" -ne 1 ] && [ "$#" -ne 3 ]; then
+    echo "Usage: $0 <id particulier> [<conteneur routeur FAI> <interface routeur FAI>]"
+    exit 1
+fi
+
+# Nom du service
+SERVICE_ID=$1
+
 cd "$(dirname "$0")"
 
 ### --------------------------
@@ -16,8 +27,6 @@ docker build -t routeur ./images/routeur
 ### --------------------------
 ### Création des conteneurs
 ### --------------------------
-
-ENTREPRISE_ID=$1
 
 # Création du conteneur dns
 docker create -it \
@@ -43,33 +52,38 @@ docker create -it \
     --privileged \
     routeur
 
-# Création du conteneur routeur_Bureau
+# Création du conteneur routeur_bureau
 docker create -it \
-    --name entreprise_routeur_bureau_${ENTREPRISE_ID} \
-    --hostname entreprise_routeur_bureau_${ENTREPRISE_ID} \
+    --name entreprise_routeur_bureau_${SERVICE_ID} \
+    --hostname entreprise_routeur_bureau_${SERVICE_ID} \
     --network none \
     --privileged dhcp_debian\
     routeur
 
-# Création du conteneur routeur_M1
+# Création du conteneur client1
 docker create -it \
-    --name entreprise_routeur_M1_${ENTREPRISE_ID} \
-    --hostname entreprise_routeur_M1_${ENTREPRISE_ID} \
+    --name entreprise_client1_${SERVICE_ID} \
+    --hostname entreprise_client1_${SERVICE_ID} \
     --network none \
     --privileged dhcp_debian\
     routeur
 
-# Création du conteneur routeur_M2
+# Création du conteneur client2
 docker create -it \
-    --name entreprise_routeur_M2_${ENTREPRISE_ID} \
-    --hostname entreprise_routeur_M2_${ENTREPRISE_ID} \
+    --name entreprise_client2_${SERVICE_ID} \
+    --hostname entreprise_client2_${SERVICE_ID} \
     --network none \
     --privileged dhcp_debian\
     routeur
 
+# Création du conteneur routeur public
+docker create -it \
+    --name entreprise_routeur_public \
+    --hostname entreprise_routeur_public \
+    --network none \
+    --privileged \
+    routeur
 
-
-#
 ### --------------------------
 ### Démarrage des conteneurs
 ### --------------------------
@@ -84,13 +98,16 @@ docker start entreprise_web
 docker start entreprise_routeur_services
 
 # Démarrage du routeur bureau
-docker start entreprise_routeur_bureau_${ENTREPRISE_ID}
+docker start entreprise_routeur_bureau_${SERVICE_ID}
 
-# Démarrage du routeur M1
-docker start entreprise_routeur_M1_${ENTREPRISE_ID}
+# Démarrage du client 1
+docker start entreprise_client1_${SERVICE_ID}
 
-# Démarrage du routeur M2
-docker start entreprise_routeur_M2_${ENTREPRISE_ID}
+# Démarrage du client 2
+docker start entreprise_client2_${SERVICE_ID}
+
+# Démarrage du routeur public
+docker start entreprise_routeur_public
 
 ### --------------------------
 ### Ajouter namespace_docker
@@ -106,9 +123,10 @@ addNetnsList() {
 addNetnsList entreprise_dns
 addNetnsList entreprise_web
 addNetnsList entreprise_routeur_services
-addNetnsList entreprise_routeur_bureau_${ENTREPRISE_ID}
-addNetnsList entreprise_routeur_M1_${ENTREPRISE_ID}
-addNetnsList entreprise_routeur_M2_${ENTREPRISE_ID}
+addNetnsList entreprise_routeur_bureau_${SERVICE_ID}
+addNetnsList entreprise_client1_${SERVICE_ID}
+addNetnsList entreprise_client2_${SERVICE_ID}
+addNetnsList entreprise_routeur_public
 
 
 ### --------------------------
@@ -123,8 +141,19 @@ addNetnsList entreprise_routeur_M2_${ENTREPRISE_ID}
 addLink() {
     sudo ip netns exec $1 ip link add $2 type veth peer name $4 netns $3
 }
+
+# Réseau services
 addLink entreprise_dns eth0 entreprise_routeur_services eth1
 addLink entreprise_web eth0 entreprise_routeur_services eth2
+
+#Réseau central
+addLink entreprise_routeur_services eth3 entreprise_routeur_bureau_${SERVICE_ID} eth3
+addLink entreprise_routeur_services eth4 entreprise_routeur_public eth1
+addLink entreprise_routeur_bureau_${SERVICE_ID} eth4 entreprise_routeur_public eth2
+
+#Réseau machines
+addLink entreprise_client1_${SERVICE_ID} eth0 entreprise_routeur_bureau_${SERVICE_ID} eth0
+addlink entreprise_client2_${SERVICE_ID} eth0 entreprise_routeur_bureau_${SERVICE_ID} eth1
 
 ### --------------------------
 ### Copie des fichiers de configuration
@@ -142,6 +171,9 @@ docker cp configs/config_web/public entreprise_web:/usr/share/nginx/html/public
 docker cp configs/config_web/intranet entreprise_web:/usr/share/nginx/html/intranet
 docker cp configs/config_web/nginx/nginx.conf entreprise_web:/etc/nginx/nginx.conf
 
+# Copie de la configuration DHCP 
+docker cp configs/config_dhcp/dhcpd.conf entreprise_routeur_bureau_${SERVICE_ID}:/etc/dhcp/
+
 ### --------------------------
 ### Lancement des scripts
 ### --------------------------
@@ -156,6 +188,20 @@ echo "[INFO] Conteneur Web créé et script de configuration lancé."
 
 # Lancement du script Routeur Services
 cat scripts/script_routeur_services.sh | docker exec -i entreprise_routeur_services bash &
-echo "[INFO] Conteneur Routeur Services créé et script de configuratuon lancé."
+echo "[INFO] Conteneur Routeur Services créé et script de configuration lancé."
+
+# Lancement du script Routeur Bureau
+cat scripts/script_routeur_bureau.sh | docker exec -i entreprise_routeur_bureau_${SERVICE_ID} bash &
+echo "[INFO] Conteneur Routeur Bureau créé et script de configuration lancé."
+
+# Lancement des scripts Machine
+cat scripts/script_client.sh | docker exec -i entreprise_client1_${SERVICE_ID} bash &
+cat scripts/script_client.sh | docker exec -i entreprise_client2_${SERVICE_ID} bash &
+echo "[INFO] Conteneur Client 1 et 2 créé et script de configuration lancé."
+
+# Lancement du routeur public
+cat scripts/script_routeur_public.sh | docker exec -i entreprise_routeur_public bash &
+echo "[INFO] Conteneur Routeur Public créé et script de configuration lancé."
+
 
 echo "[INFO] Les IP et la configuration réseau des conteneurs sont gérées dans leurs scripts respectifs."

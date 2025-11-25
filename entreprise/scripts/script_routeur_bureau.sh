@@ -1,5 +1,4 @@
 #!/bin/bash
-# Script pour la gestion des interfaces de la box
 echo "[INFO] Configuration du routeur bureau"
 # Interface
 
