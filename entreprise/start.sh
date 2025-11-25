@@ -3,13 +3,21 @@
 cd "$(dirname "$0")"
 
 ### --------------------------
-### Création et lancement du serveur DNS
+### Build des images Docker
 ### --------------------------
 
 # Build de l'image Docker DNS
 docker build -t dns_debian ./images/dns
+# Build de l'image Docker Web
+docker build -t web_server ./images/web
+# Buid de l'image du routeur
+docker build -t routeur ./images/routeur
 
-# Création du conteneur DNS
+### --------------------------
+### Création des conteneurs
+### --------------------------
+
+# Création du conteneur dns
 docker create -it \
     --name entreprise_dns \
     --hostname entreprise_dns \
@@ -17,8 +25,38 @@ docker create -it \
     --privileged \
     dns_debian
 
+# Création du conteneur web 
+docker create -it \
+    --name entreprise_web \
+    --hostname entreprise_web \
+    --network none \
+    --privileged \
+    web_server
+
+# Création du conteneur routeur_services
+docker create -it \
+    --name entreprise_routeur_services \
+    --hostname entreprise_routeur_services \
+    --network none \
+    --privileged \
+    routeur
+
+### --------------------------
+### Démarrage des conteneurs
+### --------------------------
+
 # Démarrage du conteneur DNS
 docker start entreprise_dns
+
+# Démarrage du conteneur Web
+docker start entreprise_web
+
+# Démarrage du routeur services
+docker start entreprise_routeur_services
+
+### --------------------------
+### Ajouter namespace_docker
+### --------------------------
 
 # Fonction pour ajouter le namespace Docker
 addNetnsList() {
@@ -28,6 +66,12 @@ addNetnsList() {
 }
 
 addNetnsList entreprise_dns
+addNetnsList entreprise_web
+addNetnsList entreprise_routeur_services
+
+### --------------------------
+### Copie des fichiers de configuration
+### --------------------------
 
 # Copie des fichiers de configuration Bind
 docker cp configs/config_dns/named.conf entreprise_dns:/etc/bind/named.conf
@@ -36,38 +80,25 @@ docker cp configs/config_dns/named.conf.options entreprise_dns:/etc/bind/named.c
 docker cp configs/config_dns/zones/db.site.lan.internal entreprise_dns:/etc/bind/zones/db.site.lan.internal
 docker cp configs/config_dns/zones/db.site.lan.external entreprise_dns:/etc/bind/zones/db.site.lan.external
 
-# Lancement du script DNS
-cat scripts/script_dns.sh | docker exec -i entreprise_dns bash &
-
-echo "[INFO] Conteneur DNS créé et script de configuration lancé."
-
-### --------------------------
-### Création et lancement du serveur WEB
-### --------------------------
-
-# Build de l'image Docker Web
-docker build -t web_server ./images/web
-
-# Création du conteneur Web
-docker create -it \
-    --name entreprise_web \
-    --hostname entreprise_web \
-    --network none \
-    --privileged \
-    web_server
-
-# Démarrage du conteneur Web
-docker start entreprise_web
-
-addNetnsList entreprise_web
-
 # Copie des fichiers HTML et configuration Nginx (si besoin)
 docker cp configs/config_web/public entreprise_web:/usr/share/nginx/html/public
 docker cp configs/config_web/intranet entreprise_web:/usr/share/nginx/html/intranet
 docker cp configs/config_web/nginx/nginx.conf entreprise_web:/etc/nginx/nginx.conf
 
+### --------------------------
+### Lancement des scripts
+### --------------------------
+
+# Lancement du script DNS
+cat scripts/script_dns.sh | docker exec -i entreprise_dns bash &
+echo "[INFO] Conteneur DNS créé et script de configuration lancé."
+
 # Lancement du script Web
 cat scripts/script_web.sh | docker exec -i entreprise_web bash &
-
 echo "[INFO] Conteneur Web créé et script de configuration lancé."
+
+# Lancement du script Routeur Services
+cat scripts/script_routeur_services.sh | docker exec -i entreprise_routeur_services bash &
+echo "[INFO] Conteneur Routeur Services créé et script de configuratuon lancé."
+
 echo "[INFO] Les IP et la configuration réseau des conteneurs sont gérées dans leurs scripts respectifs."
