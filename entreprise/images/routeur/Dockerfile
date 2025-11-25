@@ -13,7 +13,7 @@ RUN apt-get update && \
         tcpdump \
         inetutils-traceroute \
         isc-dhcp-client \
-        isc-dhcp-serve \
+        isc-dhcp-server \
         dnsutils \
         wget && \
     rm -rf /var/lib/apt/lists/*
