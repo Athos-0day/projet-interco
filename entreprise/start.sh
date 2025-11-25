@@ -17,6 +17,8 @@ docker build -t routeur ./images/routeur
 ### Création des conteneurs
 ### --------------------------
 
+ENTREPRISE_ID=$1
+
 # Création du conteneur dns
 docker create -it \
     --name entreprise_dns \
@@ -41,6 +43,33 @@ docker create -it \
     --privileged \
     routeur
 
+# Création du conteneur routeur_Bureau
+docker create -it \
+    --name entreprise_routeur_bureau_${ENTREPRISE_ID} \
+    --hostname entreprise_routeur_bureau_${ENTREPRISE_ID} \
+    --network none \
+    --privileged dhcp_debian\
+    routeur
+
+# Création du conteneur routeur_M1
+docker create -it \
+    --name entreprise_routeur_M1_${ENTREPRISE_ID} \
+    --hostname entreprise_routeur_M1_${ENTREPRISE_ID} \
+    --network none \
+    --privileged dhcp_debian\
+    routeur
+
+# Création du conteneur routeur_M2
+docker create -it \
+    --name entreprise_routeur_M2_${ENTREPRISE_ID} \
+    --hostname entreprise_routeur_M2_${ENTREPRISE_ID} \
+    --network none \
+    --privileged dhcp_debian\
+    routeur
+
+
+
+#
 ### --------------------------
 ### Démarrage des conteneurs
 ### --------------------------
@@ -53,6 +82,15 @@ docker start entreprise_web
 
 # Démarrage du routeur services
 docker start entreprise_routeur_services
+
+# Démarrage du routeur bureau
+docker start entreprise_routeur_bureau_${ENTREPRISE_ID}
+
+# Démarrage du routeur M1
+docker start entreprise_routeur_M1_${ENTREPRISE_ID}
+
+# Démarrage du routeur M2
+docker start entreprise_routeur_M2_${ENTREPRISE_ID}
 
 ### --------------------------
 ### Ajouter namespace_docker
@@ -68,6 +106,10 @@ addNetnsList() {
 addNetnsList entreprise_dns
 addNetnsList entreprise_web
 addNetnsList entreprise_routeur_services
+addNetnsList entreprise_routeur_bureau_${ENTREPRISE_ID}
+addNetnsList entreprise_routeur_M1_${ENTREPRISE_ID}
+addNetnsList entreprise_routeur_M2_${ENTREPRISE_ID}
+
 
 ### --------------------------
 ### Copie des fichiers de configuration
