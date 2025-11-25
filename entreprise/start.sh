@@ -70,6 +70,21 @@ addNetnsList entreprise_web
 addNetnsList entreprise_routeur_services
 
 ### --------------------------
+### Création des liens
+### --------------------------
+
+# Creation d'un lien ethernet virtuel entre 2 conteneur docker
+#   $1: Nom du 1er Docker
+#   $2: Nom de l'interface utilisée sur le 1er Docker
+#   $3: Nom du 2nd Docker
+#   $4: Nom de l'interface utilisée sur le 2nd Docker
+addLink() {
+    sudo ip netns exec $1 ip link add $2 type veth peer name $4 netns $3
+}
+addLink entreprise_dns eth0 entreprise_routeur_services eth1
+addLink entreprise_web eth0 entreprise_routeur_services eth2
+
+### --------------------------
 ### Copie des fichiers de configuration
 ### --------------------------
 
