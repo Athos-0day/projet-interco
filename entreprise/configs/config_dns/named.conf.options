@@ -1,7 +1,6 @@
 options {
     directory "/etc/bind";
     recursion yes;
-    allow-recursion { none; };
     allow-query { any; };
     listen-on { any; };
     listen-on-v6 { any; };
