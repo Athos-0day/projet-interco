@@ -28,7 +28,7 @@ Le sous-réseau *Services* contient toutes les machines essentielles :
 | Serveur Web (NGINX) | **192.168.49.20** | Héberge les sites interne et externe |
 | Serveur VoIP | **192.168.49.19** | Service téléphonie interne |
 
-Toutes les machines du réseau Services utilisent **des adresses IP fixes**, configurées manuellement dans les conteneurs via leurs scripts de démarrage.
+Toutes les machines du réseau Services utilisent **des adresses IP fixes**, configurées dans leurs scripts de démarrage.
 
 ---
 
@@ -38,10 +38,10 @@ Le sous-réseau Machines correspond aux ordinateurs des employés.
 
 - Ils sont **en DHCP** et reçoivent automatiquement :
   - Leur **adresse IP**
-  - Le **DNS interne** : 192.168.49.18  
+  - Le **DNS interne** : `192.168.49.18`  
   - La **passerelle** : routeur machine
 
-Ce réseau peut être **répliqué** (plusieurs services RH, Finances, etc. avec le même schéma).
+Ce réseau peut être **répliqué** (plusieurs réseaux RH/Finances suivant le même modèle).
 
 ---
 
@@ -55,7 +55,7 @@ Deux sites sont proposés :
 - **Nom de domaine** : `intra.site.lan`
 - **Chemin serveur** : `/intranet`
 - **Accessibilité** : uniquement depuis l’intérieur de l’entreprise  
-  (filtré par NGINX ou firewall)
+  (filtré via NGINX + firewall)
 
 ### Site externe
 - **Nom de domaine** : `www.site.lan`
@@ -71,7 +71,7 @@ Le serveur DNS utilise **Bind9**, IP : **192.168.49.18**
 Il fournit deux types de résolutions :
 
 ### Résolution interne
-Pour les machines du LAN :
+Pour les machines du réseau interne :
 
 | Nom de domaine | Adresse renvoyée |
 |----------------|------------------|
@@ -79,25 +79,49 @@ Pour les machines du LAN :
 | `www.site.lan` | **192.168.49.20** |
 
 ### Résolution externe
-Pour le monde extérieur :
+Pour les utilisateurs extérieurs :
 
 | Nom de domaine | Adresse renvoyée |
 |----------------|------------------|
 | `www.site.lan` | **120.0.50.2** (IP publique du routeur public) |
 
-Cela permet :
+---
 
-- Aux utilisateurs internes d’accéder directement au serveur web local  
-- Aux utilisateurs extérieurs de passer par le routeur public
+## Règles Firewall — Routeur Public
+
+Le **routeur public** protège le réseau interne contre Internet.  
+Il applique les règles suivantes :
+
+### **Filtrage entrant (depuis Internet : 120.0.48.0/20)**
+
+**Autorisé uniquement :**
+- Port **80/tcp** → serveur web (HTTP)
+- Port **53/udp/tcp** → serveur DNS
+
+Toutes les autres connexions entrantes sont **bloquées**.
+
+### Protection des services internes
+
+- **On ne peut pas ping** le serveur DNS ou le serveur Web depuis l’extérieur.
+- Aucun autre port (SSH, VoIP, intranet, etc.) n'est exposé publiquement.
+
+### NAT (sortant)
+
+Tout le trafic sortant depuis le réseau interne est **masqué** (MASQUERADE)  
+→ Les machines internes apparaissent avec l’IP publique **120.0.50.2**
+
+Ainsi :
+- Les machines internes peuvent accéder à Internet
+- Internet ne peut pas initier de connexion vers le LAN
 
 ---
 
 ## Résumé global
 
-- Le **réseau Services** fonctionne en **IP fixes**
-- Le **réseau Machines** fonctionne **en DHCP**
-- Le **DNS interne** résout différemment selon l'origine de la requête
-- Le **serveur web** sépare les contenus internes et externes  
-- L’architecture est segmentée via trois routeurs coordonnés
+- Le **réseau Services** fonctionne avec des **IP fixes**
+- Le **réseau Machines** fonctionne en **DHCP**
+- Le **DNS interne** résout différemment selon l’origine de la requête (LAN / Internet)
+- Le **serveur Web** sépare les contenus internes et externes  
+- Le **routeur public** protège l’infrastructure avec un firewall strict + NAT
 
 ---
