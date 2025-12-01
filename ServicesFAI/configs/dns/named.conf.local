@@ -1,0 +1,4 @@
+zone "services.fai" {
+    type master;
+    file "/etc/bind/db.services.fai";
+};
