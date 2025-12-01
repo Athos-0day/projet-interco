@@ -23,6 +23,8 @@ docker build -t dns_debian ./images/dns
 docker build -t web_server ./images/web
 # Buid de l'image du routeur
 docker build -t routeur ./images/routeur
+# Build de l'image du serveur VoIP
+docker build -t voip_server ./images/voip
 
 ### --------------------------
 ### Création des conteneurs
@@ -35,6 +37,14 @@ docker create -it \
     --network none \
     --privileged \
     dns_debian
+
+# Création du conteneur serveur voip
+docker create -it \
+    --name entreprise_voip \
+    --hostname entreprise_voip \
+    --network none \
+    --privileged \
+    voip_server
 
 # Création du conteneur web 
 docker create -it \
@@ -109,6 +119,9 @@ docker start entreprise_client2_${SERVICE_ID}
 # Démarrage du routeur public
 docker start entreprise_routeur_public
 
+# Démarrage du serveur voip
+docker start entreprise_voip
+
 ### --------------------------
 ### Ajouter namespace_docker
 ### --------------------------
@@ -127,6 +140,7 @@ addNetnsList entreprise_routeur_bureau_${SERVICE_ID}
 addNetnsList entreprise_client1_${SERVICE_ID}
 addNetnsList entreprise_client2_${SERVICE_ID}
 addNetnsList entreprise_routeur_public
+addNetnsList entreprise_voip
 
 
 ### --------------------------
@@ -145,6 +159,7 @@ addLink() {
 # Réseau services
 addLink entreprise_dns eth0 entreprise_routeur_services eth1
 addLink entreprise_web eth0 entreprise_routeur_services eth2
+addLink entreprise_voip eth0 entreprise_routeur_services eth3
 
 #Réseau central
 addLink entreprise_routeur_services eth3 entreprise_routeur_bureau_${SERVICE_ID} eth3
@@ -174,6 +189,10 @@ docker cp configs/config_web/nginx/nginx.conf entreprise_web:/etc/nginx/nginx.co
 # Copie de la configuration DHCP 
 docker cp configs/config_dhcp/dhcpd.conf entreprise_routeur_bureau_${SERVICE_ID}:/etc/dhcp/
 
+# Copie de la configuration du serveur VoIP (Asterisk)
+docker cp configs/config_voip/sip.conf entreprise_voip:/etc/asterisk/sip.conf
+docker cp configs/config_voip/extensions.conf entreprise_voip:/etc/asterisk/extensions.conf
+
 ### --------------------------
 ### Lancement des scripts
 ### --------------------------
@@ -198,6 +217,10 @@ echo "[INFO] Conteneur Routeur Bureau créé et script de configuration lancé."
 cat scripts/script_client.sh | docker exec -i entreprise_client1_${SERVICE_ID} bash &
 cat scripts/script_client.sh | docker exec -i entreprise_client2_${SERVICE_ID} bash &
 echo "[INFO] Conteneur Client 1 et 2 créé et script de configuration lancé."
+
+# Lancement du serveur voip
+cat scripts/script_voip.sh | docker exec -i entreprise_voip bash &
+echo "[INFO] Conteneur Serveur VOIP créé et script de configuration lancé."
 
 # Lancement du routeur public
 cat scripts/script_routeur_public.sh | docker exec -i entreprise_routeur_public bash &
