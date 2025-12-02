@@ -50,6 +50,7 @@ echo "[INFO] Configuration Nginx OK"
 ### Démarrage de Nginx
 ### --------------------------
 
+ip route add default via 192.168.49.2            # sortie vers le routeur public
 echo "[INFO] Démarrage de Nginx en avant-plan"
 /usr/sbin/nginx -g "daemon off;"
 

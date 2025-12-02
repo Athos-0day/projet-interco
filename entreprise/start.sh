@@ -67,7 +67,7 @@ docker create -it \
     --name entreprise_routeur_bureau_${SERVICE_ID} \
     --hostname entreprise_routeur_bureau_${SERVICE_ID} \
     --network none \
-    --privileged dhcp_debian\
+    --privileged \
     routeur
 
 # Création du conteneur client1
@@ -75,7 +75,7 @@ docker create -it \
     --name entreprise_client1_${SERVICE_ID} \
     --hostname entreprise_client1_${SERVICE_ID} \
     --network none \
-    --privileged dhcp_debian\
+    --privileged \
     routeur
 
 # Création du conteneur client2
@@ -83,7 +83,7 @@ docker create -it \
     --name entreprise_client2_${SERVICE_ID} \
     --hostname entreprise_client2_${SERVICE_ID} \
     --network none \
-    --privileged dhcp_debian\
+    --privileged \
     routeur
 
 # Création du conteneur routeur public
@@ -162,13 +162,12 @@ addLink entreprise_web eth0 entreprise_routeur_services eth2
 # addLink entreprise_voip eth0 entreprise_routeur_services eth3
 
 #Réseau central
-addLink entreprise_routeur_services eth3 entreprise_routeur_bureau_${SERVICE_ID} eth3
-addLink entreprise_routeur_services eth4 entreprise_routeur_public eth1
-addLink entreprise_routeur_bureau_${SERVICE_ID} eth4 entreprise_routeur_public eth2
+addLink entreprise_routeur_services eth3 entreprise_routeur_public eth1
+addLink entreprise_routeur_bureau_${SERVICE_ID} eth3 entreprise_routeur_public eth2
 
 #Réseau machines
-addLink entreprise_client1_${SERVICE_ID} eth0 entreprise_routeur_bureau_${SERVICE_ID} eth0
-addlink entreprise_client2_${SERVICE_ID} eth0 entreprise_routeur_bureau_${SERVICE_ID} eth1
+addLink entreprise_client1_${SERVICE_ID} eth0 entreprise_routeur_bureau_${SERVICE_ID} eth2
+addLink entreprise_client2_${SERVICE_ID} eth0 entreprise_routeur_bureau_${SERVICE_ID} eth1
 
 ### --------------------------
 ### Copie des fichiers de configuration

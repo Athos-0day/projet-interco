@@ -12,13 +12,13 @@ ip link set br0 up
 ip addr add 192.168.49.33/28 dev br0
 
 # Côté routeur
-ip link add name br1 type bridge
-ip link set eth3 master br1
-ip link set eth4 master br1
+# # ip link add name br1 type bridge
+# ip link set eth3 master br1
+# ip link set eth4 master br1
 ip link set dev eth3 up
-ip link set dev eth4 up
-ip link set br1 up
-ip addr add 192.168.49.3/28 dev br1
+# ip link set dev eth4 up
+# ip link set br1 up
+ip addr add 192.168.49.3/28 dev eth3
 
 # Routage
 echo 1 > /proc/sys/net/ipv4/ip_forward

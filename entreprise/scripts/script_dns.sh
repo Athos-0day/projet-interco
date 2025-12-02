@@ -44,5 +44,6 @@ fi
 
 echo "[INFO] Démarrage de Bind9"
 
+ip route add default via 192.168.49.2            # sortie vers le routeur public
 # Bind en avant-plan pour Docker
 /usr/sbin/named -c /etc/bind/named.conf -f
