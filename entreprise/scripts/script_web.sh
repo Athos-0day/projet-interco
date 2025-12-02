@@ -5,7 +5,7 @@
 ### --------------------------
 
 WEB_IP="192.168.49.20"
-WEB_NETMASK="/24"
+WEB_NETMASK="/28"
 WEB_INTERFACE="eth0"
 
 echo "[INFO] Attribution de l'adresse IP au serveur WEB : $WEB_IP$WEB_NETMASK"
@@ -50,7 +50,7 @@ echo "[INFO] Configuration Nginx OK"
 ### Démarrage de Nginx
 ### --------------------------
 
-ip route add default via 192.168.49.2            # sortie vers le routeur public
+ip route add default via 192.168.49.17            # sortie vers le routeur public
 echo "[INFO] Démarrage de Nginx en avant-plan"
 /usr/sbin/nginx -g "daemon off;"
 

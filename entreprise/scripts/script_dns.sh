@@ -5,7 +5,7 @@
 ### --------------------------
 
 DNS_IP="192.168.49.18"
-DNS_NETMASK="/24"
+DNS_NETMASK="/28"
 DNS_INTERFACE="eth0"
 
 echo "[INFO] Attribution de l'adresse IP au DNS : $DNS_IP$DNS_NETMASK"
@@ -44,6 +44,6 @@ fi
 
 echo "[INFO] Démarrage de Bind9"
 
-ip route add default via 192.168.49.2            # sortie vers le routeur public
+ip route add default via 192.168.49.17            # sortie vers le routeur public
 # Bind en avant-plan pour Docker
 /usr/sbin/named -c /etc/bind/named.conf -f
