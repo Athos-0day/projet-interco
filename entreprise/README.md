@@ -43,6 +43,43 @@ Le sous-réseau Machines correspond aux ordinateurs des employés.
 
 Ce réseau peut être **répliqué** (plusieurs réseaux RH/Finances suivant le même modèle).
 
+### Configuration DHCP — Sous-réseau Machines
+
+Le sous-réseau Machines utilise un serveur DHCP pour attribuer automatiquement les paramètres réseau aux postes utilisateurs.
+
+#### Paramètres globaux DHCP
+
+- **default-lease-time** : 600 secondes  
+- **max-lease-time** : 7200 secondes  
+- **authoritative** : indique que ce serveur est la source officielle pour ce réseau
+
+#### Plage DHCP distribuée
+
+Le serveur DHCP attribue des adresses IP dans le sous-réseau suivant :
+
+- **Sous-réseau** : `192.168.49.32/28`
+- **Plage d’adresses** : `192.168.49.34` → `192.168.49.46`
+- **Passerelle (routeur machines)** : `192.168.49.33`
+- **DNS interne** : `192.168.49.18`
+- **Broadcast** : `192.168.49.47`
+
+#### Contenu du fichier `dhcpd.conf`
+
+```conf
+default-lease-time 600;
+max-lease-time 7200;
+
+authoritative;
+
+subnet 192.168.49.32 netmask 255.255.255.240 {
+  range 192.168.49.34 192.168.49.46;
+  option subnet-mask 255.255.255.240;
+  option broadcast-address 192.168.49.47;
+  option routers 192.168.49.33;
+  option domain-name-servers 192.168.49.18;
+}
+```
+
 ---
 
 ## Serveur Web
@@ -61,6 +98,13 @@ Deux sites sont proposés :
 - **Nom de domaine** : `www.site.lan`
 - **Chemin serveur** : `/public`
 - **Accessibilité** : accessible partout (via IP publique du routeur public)
+
+### Exemple de test de téléchargement de la page public depuis le réseau interne
+
+Pour lancer le téléchargement :
+```bash
+wget --header="Host: www.site.lan" http://192.168.49.20/
+```
 
 ---
 
