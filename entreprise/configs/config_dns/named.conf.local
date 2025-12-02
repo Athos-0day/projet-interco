@@ -3,7 +3,7 @@ acl "mylan" {
 };
 
 view "internal" {
-    match-clients { mylan; };
+    match-clients { any; };
 
     zone "site.lan" {
         type master;
