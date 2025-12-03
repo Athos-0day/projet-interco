@@ -177,6 +177,7 @@ addLink entreprise_client2_${SERVICE_ID} eth0 entreprise_routeur_bureau_${SERVIC
 docker cp configs/config_dns/named.conf entreprise_dns:/etc/bind/named.conf
 docker cp configs/config_dns/named.conf.local entreprise_dns:/etc/bind/named.conf.local
 docker cp configs/config_dns/named.conf.options entreprise_dns:/etc/bind/named.conf.options
+docker exec entreprise_dns mkdir -p /etc/bind/zones
 docker cp configs/config_dns/zones/db.site.lan.internal entreprise_dns:/etc/bind/zones/db.site.lan.internal
 docker cp configs/config_dns/zones/db.site.lan.external entreprise_dns:/etc/bind/zones/db.site.lan.external
 

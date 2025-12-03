@@ -8,11 +8,13 @@ DNS_IP="192.168.49.18"
 DNS_NETMASK="/28"
 DNS_INTERFACE="eth0"
 
-echo "[INFO] Attribution de l'adresse IP au DNS : $DNS_IP$DNS_NETMASK"
-ip addr add $DNS_IP$DNS_NETMASK dev $DNS_INTERFACE
 
 echo "[INFO] Activation de l'interface $DNS_INTERFACE"
 ip link set $DNS_INTERFACE up
+
+echo "[INFO] Attribution de l'adresse IP au DNS : $DNS_IP$DNS_NETMASK"
+ip addr add $DNS_IP$DNS_NETMASK dev $DNS_INTERFACE
+
 
 
 ### --------------------------
