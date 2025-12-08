@@ -14,32 +14,15 @@ iptables -A INPUT -p udp --dport 10000:20000 -j ACCEPT
 
 
 
-apt install -y build-essential wget subversion
-cd /usr/src
-wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-18-current.tar.gz
-tar xvf asterisk-18-current.tar.gz
-
-cd asterisk-18*
-./configure
-make menuselect
-make
-make install
-make samples
-make config
 
 
-
-
-
-
-
-# Vérifier la configuration Asterisk
-asterisk -rx "core show settings" >/dev/null 2>&1
-if [ $? -ne 0 ]; then
-    echo "[ERROR] Configuration Asterisk invalide."
-    exit 1
-fi
-
+# # Vérifier la configuration Asterisk
+# asterisk -rx "core show settings" >/dev/null 2>&1
+# if [ $? -ne 0 ]; then
+#     echo "[ERROR] Configuration Asterisk invalide."
+#     exit 1
+# fi
+#
 echo "[INFO] Démarrage d'Asterisk"
 # Lancer Asterisk en avant-plan pour Docker
 asterisk -f -U asterisk

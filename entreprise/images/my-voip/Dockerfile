@@ -1,5 +1,5 @@
 # Use the Debian base image
-FROM debian:stable-slim
+FROM debian:bookworm
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -16,24 +16,8 @@ RUN apt-get update && \
     libjansson-dev \
     libssl-dev \
     libedit-dev \
-    libsqlite3-dev \
-    libxslt1-dev \
-    iproute2 \
-    iptables \
-    apt-utils \
-    net-tools \
-    systemd \
-    telnet \
-    iputils-ping \
-    nano \
-    tcpdump \
-    inetutils-traceroute \
-    isc-dhcp-client \
-    isc-dhcp-server \
-    dnsutils \
-    wget && \
+    libsqlite3-dev && \
     apt-get clean
-
 
 # Download Asterisk source code
 RUN curl -L -o /tmp/asterisk.tar.gz https://downloads.asterisk.org/pub/telephony/asterisk/asterisk-23.1.0.tar.gz && \
@@ -50,11 +34,8 @@ RUN ./configure && \
     rm -rf /tmp/asterisk-23.1.0
 
 # Expose the necessary ports for SIP and RTP
-# EXPOSE 5060/udp 10000-20000/udp
+EXPOSE 5060/udp 10000-20000/udp
 
 # Start Asterisk when the container runs
-# CMD ["/usr/sbin/asterisk", "-f"]
+CMD ["/usr/sbin/asterisk", "-f"]
 
-RUN mkdir /etc/scripts
-ENV PATH "/etc/scripts:$PATH"
-CMD ["/bin/bash"]

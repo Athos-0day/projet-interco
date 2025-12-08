@@ -11,7 +11,7 @@ CONTAINERS=(
     "entreprise_routeur_bureau_*"
     "entreprise_client1_*"
     "entreprise_client2_*"
-    # "entreprise_voip"
+    "entreprise_voip"
 )
 
 # Arrêt + suppression
