@@ -160,7 +160,7 @@ addLink() {
 # Réseau services
 addLink entreprise_dns eth0 entreprise_routeur_services eth1
 addLink entreprise_web eth0 entreprise_routeur_services eth2
-addLink entreprise_voip eth0 entreprise_routeur_services eth3
+addLink entreprise_voip eth0 entreprise_routeur_services eth5
 
 #Réseau central
 addLink entreprise_routeur_services eth3 entreprise_routeur_public eth1
@@ -191,6 +191,8 @@ docker cp configs/config_web/nginx/nginx.conf entreprise_web:/etc/nginx/nginx.co
 docker cp configs/config_dhcp/dhcpd.conf entreprise_routeur_bureau_${SERVICE_ID}:/etc/dhcp/
 
 # Copie de la configuration du serveur VoIP (Asterisk)
+
+docker cp configs/config_voip/pjsip.conf entreprise_voip:/etc/asterisk/pjsip.conf
 docker cp configs/config_voip/sip.conf entreprise_voip:/etc/asterisk/sip.conf
 docker cp configs/config_voip/extensions.conf entreprise_voip:/etc/asterisk/extensions.conf
 

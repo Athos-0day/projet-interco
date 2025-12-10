@@ -5,7 +5,7 @@ echo "[INFO] Configuration du serveur VoIP Asterisk"
 # Attribution de l'IP fixe
 VOIP_IP="192.168.49.19"
 VOIP_INTERFACE="eth0"
-ip addr add $VOIP_IP/24 dev $VOIP_INTERFACE
+ip addr add $VOIP_IP/28 dev $VOIP_INTERFACE
 ip link set $VOIP_INTERFACE up
 
 # Ouvrir les ports SIP et RTP
@@ -23,6 +23,8 @@ iptables -A INPUT -p udp --dport 10000:20000 -j ACCEPT
 #     exit 1
 # fi
 #
+
+ip route add default via 192.168.49.17            # sortie vers le routeur public
 echo "[INFO] Démarrage d'Asterisk"
 # Lancer Asterisk en avant-plan pour Docker
 asterisk -f -U asterisk
