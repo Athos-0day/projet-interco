@@ -9,7 +9,10 @@ if [ -z "$1" ]; then
     echo "Il faut donner l'identifiant du fai à supprimer"
     exit 1
 fi
-PARTICULIER_ID=$1
+
+
+
+FAI_ID=$1
 
 # On supprime les namespaces créé
 sudo ip netns delete routeur_${FAI_ID}_ville_1_tmp
