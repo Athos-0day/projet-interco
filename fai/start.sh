@@ -83,6 +83,11 @@ addLink fai_routeurParis eth2 fai_peService eth0
 addLink fai_routeurParis eth3 fai_routeurLyon eth0
 addLink fai_routeurParis eth4 fai_routeurBordeaux eth0
 
+# == RESEAU Service ==
+../ServicesFAI/start.sh A
+ip netns exec servicesA_switch ip link set router1 name eth1 netns fai_peService
+
+
 # Ajouter les connexions Réseau d'acces Entreprise et réseau d'acces Service après le merge
 
 # ================= CONFIG =======================

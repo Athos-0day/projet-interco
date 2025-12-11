@@ -10,6 +10,8 @@ sudo ip netns delete fai_particulierSwitch
 ../particulier/stop.sh A
 ../particulier/stop.sh B
 
+../ServicesFAI/stop.sh A
+
 # On supprime les dockers du réseau
 # Kill et supprime un docker
 #   $1: Nom du Docker
