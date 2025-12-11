@@ -1,5 +1,3 @@
-# scripte pour le routeur central
-# se raccorde au routeurs suivants :
 # routeurBordure : 120.0.49.2/31
 # peEntreprise : 120.0.49.4/31
 # peService : 120.0.49.6/31

@@ -94,10 +94,14 @@ docker cp configs/dhcpd.conf fai_peParticulier:/etc/dhcp/
 
 # ================= Script de démarrage ======================
 # Execution d'un script sur les dockers
+docker exec -i fai_peEntreprise bash < scripts/peEntreprise.sh &
 docker exec -i fai_peParticulier bash < scripts/peParticulier.sh &
-docker exec -i fai_routeurParis bash < scripts/routeurParis.sh &
 docker exec -i fai_peService bash < scripts/peService.sh &
+docker exec -i fai_routeurBordeaux bash < scripts/routeurBordeaux.sh &
 docker exec -i fai_routeurBordure bash < scripts/routeurBordure.sh &
+docker exec -i fai_routeurLyon bash < scripts/routeurLyon.sh &
+docker exec -i fai_routeurParis bash < scripts/routeurParis.sh &
+docker exec -i fai_routeurToulouse bash < scripts/routeurToulouse.sh &
 
 
 
