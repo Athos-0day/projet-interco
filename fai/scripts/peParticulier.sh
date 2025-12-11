@@ -7,4 +7,5 @@ ip addr add 120.0.49.41/31 dev eth0
 ip addr add 120.0.51.1/24 dev eth1
 
 # On démare le service DHCP
-/etc/init.d/isc-dhcp-server start > /dev/null &
+touch /var/lib/dhcp/dhcpd.leases
+dhcpd -cf /etc/dhcp/dhcpd.conf eth1 &

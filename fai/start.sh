@@ -13,7 +13,7 @@ fi
 cd "$(dirname "$0")"
 
 # Construction des images dockers
-docker build -q -t dhcp_debian ./images/dhcp_debian
+docker build -q -t frr ./images/frr
 
 # Creation et démarrage d'un docker
 #   $1: Nom du Docker
@@ -29,14 +29,14 @@ dockerStart() {
 }
 
 # Demarrage des dockers
-dockerStart fai_peParticulier dhcp_debian
-dockerStart fai_routeurToulouse dhcp_debian
-dockerStart fai_routeurLyon dhcp_debian
-dockerStart fai_routeurBordeaux dhcp_debian
-dockerStart fai_routeurParis dhcp_debian
-dockerStart fai_routeurBordure dhcp_debian
-dockerStart fai_peService dhcp_debian
-dockerStart fai_peEntreprise dhcp_debian
+dockerStart fai_peParticulier frr
+dockerStart fai_routeurToulouse frr
+dockerStart fai_routeurLyon frr
+dockerStart fai_routeurBordeaux frr
+dockerStart fai_routeurParis frr
+dockerStart fai_routeurBordure frr
+dockerStart fai_peService frr
+dockerStart fai_peEntreprise frr
 
 
 # ============== Connexion des dockers ==================
