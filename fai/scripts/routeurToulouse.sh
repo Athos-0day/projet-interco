@@ -10,3 +10,5 @@ ip link set eth2 up
 ip addr add 120.0.49.21/31 dev eth0
 ip addr add 120.0.49.31/31 dev eth1
 ip addr add 120.0.49.40/31 dev eth2
+
+/usr/lib/frr/watchfrr.sh restart ospfd

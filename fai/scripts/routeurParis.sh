@@ -16,3 +16,5 @@ ip addr add 120.0.49.4/31 dev eth1
 ip addr add 120.0.49.6/31 dev eth2
 ip addr add 120.0.49.8/31 dev eth3
 ip addr add 120.0.49.10/31 dev eth4
+
+/usr/lib/frr/watchfrr.sh restart ospfd

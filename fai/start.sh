@@ -90,7 +90,7 @@ addLink fai_routeurParis eth4 fai_routeurBordeaux eth0
 
 # On ajoute les fichiers de config aux dockers
 docker cp configs/dhcpd.conf fai_peParticulier:/etc/dhcp/
-
+docker cp scripts/routeurBordeau/ospfd.conf fai_routeurBordeaux:/etc/frr/
 
 # ================= Script de démarrage ======================
 # Execution d'un script sur les dockers

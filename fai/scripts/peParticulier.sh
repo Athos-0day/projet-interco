@@ -9,3 +9,6 @@ ip addr add 120.0.51.1/24 dev eth1
 # On démare le service DHCP
 touch /var/lib/dhcp/dhcpd.leases
 dhcpd -cf /etc/dhcp/dhcpd.conf eth1 &
+
+
+/usr/lib/frr/watchfrr.sh restart ospfd
