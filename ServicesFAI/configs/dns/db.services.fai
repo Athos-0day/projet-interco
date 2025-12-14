@@ -7,6 +7,6 @@ $TTL 1H
         2h )       ; Negative Cache TTL
 
 @       IN  NS  dns.services.fai.
-dns     IN  A   120.0.48.66
-web     IN  A   120.0.48.67
-db      IN  A   120.0.48.68
+dns     IN  A   120.0.32.66
+web     IN  A   120.0.32.67
+db      IN  A   120.0.32.68

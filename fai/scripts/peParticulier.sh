@@ -3,8 +3,8 @@
 ip link set eth0 up
 ip link set eth1 up
 
-ip addr add 120.0.49.41/31 dev eth0
-ip addr add 120.0.51.1/24 dev eth1
+ip addr add 120.0.33.41/31 dev eth0
+ip addr add 120.0.35.1/24 dev eth1
 
 # On démare le service DHCP
 touch /var/lib/dhcp/dhcpd.leases

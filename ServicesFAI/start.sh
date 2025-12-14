@@ -47,9 +47,9 @@ sudo ip netns exec services${SERVICES_ID}_switch ip link set lo up
 sudo ip netns exec services${SERVICES_ID}_switch ip link add br0 type bridge
 sudo ip netns exec services${SERVICES_ID}_switch ip link set br0 up
 
-# Accès depuis l'host pour les tests (120.0.48.65)
+# Accès depuis l'host pour les tests (120.0.32.65)
 #sudo ip link add services${SERVICES_ID}_host type veth peer name host0 netns services${SERVICES_ID}_switch
-#sudo ip addr add 120.0.48.65/28 dev services${SERVICES_ID}_host
+#sudo ip addr add 120.0.32.65/28 dev services${SERVICES_ID}_host
 #sudo ip link set services${SERVICES_ID}_host up
 #sudo ip netns exec services${SERVICES_ID}_switch ip link set host0 master br0
 #sudo ip netns exec services${SERVICES_ID}_switch ip link set host0 up
@@ -89,4 +89,4 @@ cat scripts/script_dns.sh | docker exec -i services${SERVICES_ID}_dns bash &
 cat scripts/script_web.sh | docker exec -i services${SERVICES_ID}_web bash &
 cat scripts/script_db.sh  | docker exec -i services${SERVICES_ID}_db  bash &
 
-echo "Réseau ServicesFAI ${SERVICES_ID} démarré (120.0.48.64/28)"
+echo "Réseau ServicesFAI ${SERVICES_ID} démarré (120.0.32.64/28)"

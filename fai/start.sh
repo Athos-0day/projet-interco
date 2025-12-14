@@ -19,7 +19,8 @@ docker build -q -t frr ./images/frr
 #   $1: Nom du Docker
 #   $2: Nom de l'image utilisée
 dockerStart() {
-    docker create -it --name $1 --hostname $1 --network none --privileged $2
+    # commenté "> /dev/null 2>&1" si vous voulez le nom de l'image
+    docker create -it --name $1 --hostname $1 --network none --privileged $2 > /dev/null 2>&1 
     docker start $1
 
     # Ajout du namespace du container docker à la liste netns
