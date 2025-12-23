@@ -8,9 +8,11 @@ LDAP_IP="192.168.49.21"
 LDAP_NETMASK="/28"
 LDAP_INTERFACE="eth0"
 
-export LDAP_ORGANISATION="Example Corp"
-export LDAP_DOMAIN="example.com"
-export LDAP_ADMIN_PASSWORD="adminpassword"
+LDAP_ORGANISATION="Example Corp"
+LDAP_DOMAIN="example.com"
+LDAP_ADMIN_PASSWORD="adminpassword"
+LDAP_BASE_DN="dc=example,dc=com"
+LDIF_FILE="/etc/ldap/custom.ldif"
 
 echo "[INFO] Activation de l'interface $LDAP_INTERFACE"
 ip link set $LDAP_INTERFACE up
@@ -32,13 +34,13 @@ echo "slapd slapd/no_configuration boolean false" | debconf-set-selections && \
 echo "slapd slapd/domain string ${LDAP_DOMAIN}" | debconf-set-selections && \
 echo "slapd shared/organization string ${LDAP_ORGANISATION}" | debconf-set-selections && \
 echo "slapd slapd/password1 password ${LDAP_ADMIN_PASSWORD}" | debconf-set-selections && \
-echo "slapd slapd/password2 password ${LDAP_ADMIN_PASSWORD}" | debconf-set-selections && \ 
+echo "slapd slapd/password2 password ${LDAP_ADMIN_PASSWORD}" | debconf-set-selections && \
 dpkg-reconfigure -f noninteractive slapd
 
 
 
-
-
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -p udp --dport 389 -j ACCEPT
 iptables -A INPUT -p tcp --dport 389 -j ACCEPT
 
@@ -47,6 +49,7 @@ iptables -A INPUT -p tcp --dport 389 -j ACCEPT
 ### --------------------------
 slapd -h "ldap://0.0.0.0" &
 
+ldapadd -x -D "cn=admin,$LDAP_BASE_DN" -w $LDAP_ADMIN_PASSWORD -f $LDIF_FILE
 
 ip route add default via 192.168.49.17            
 
