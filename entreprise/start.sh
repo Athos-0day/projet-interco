@@ -31,7 +31,7 @@ docker build -t openldap-custom ./images/ldap
 ### --------------------------
 ### Création des conteneurs
 ### --------------------------
-
+#
 # Création du conteneur dns
 docker create -it \
     --name entreprise_dns \
@@ -99,12 +99,11 @@ docker create -it \
 
 # Création du conteneur ldap
 docker create -it \
-  --name entreprise_ldap \
-  -p 389:389 \
-  -p 636:636 \
-  -v ldap_data:/var/lib/ldap \
-  -v ldap_config:/etc/ldap/slapd.d \
-  openldap-custom
+    --name entreprise_ldap \
+    --hostname ldap \
+    --network none \
+    --privileged \
+    openldap-custom
 
 ### --------------------------
 ### Démarrage des conteneurs
