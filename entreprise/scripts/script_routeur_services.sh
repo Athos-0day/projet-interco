@@ -8,9 +8,11 @@ ip link add name br0 type bridge
 ip link set eth1 master br0
 ip link set eth2 master br0
 ip link set eth5 master br0
+ip link set eth6 master br0
 ip link set eth1 up
 ip link set eth2 up
 ip link set eth5 up
+ip link set eth6 up
 ip link set br0 up
 ip addr add 192.168.49.17/28 dev br0
 

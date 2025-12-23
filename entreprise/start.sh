@@ -25,7 +25,7 @@ docker build -t web_server ./images/web
 docker build -t routeur ./images/routeur
 # Build de l'image du serveur VoIP
 docker build -t voip_server ./images/voip
-
+# Build de l'image de ldap
 docker build -t openldap-custom ./images/ldap
 
 ### --------------------------
@@ -97,7 +97,7 @@ docker create -it \
     --privileged \
     routeur
 
-
+# Création du conteneur ldap
 docker create -it \
   --name entreprise_ldap \
   -p 389:389 \
@@ -134,6 +134,7 @@ docker start entreprise_routeur_public
 # Démarrage du serveur voip
 docker start entreprise_voip
 
+# Démarrage du serveur ldap
 docker start entreprise_ldap
 
 ### --------------------------
@@ -175,6 +176,7 @@ addLink() {
 addLink entreprise_dns eth0 entreprise_routeur_services eth1
 addLink entreprise_web eth0 entreprise_routeur_services eth2
 addLink entreprise_voip eth0 entreprise_routeur_services eth5
+addLink entreprise_ldap eth0 entreprise_routeur_services eth6
 
 #Réseau central
 addLink entreprise_routeur_services eth3 entreprise_routeur_public eth1
@@ -214,7 +216,10 @@ docker cp configs/config_voip/asterisk.conf entreprise_voip:/etc/asterisk/asteri
 docker cp configs/config_voip/logger.conf entreprise_voip:/etc/asterisk/logger.conf
 docker cp configs/config_voip/modules.conf entreprise_voip:/etc/asterisk/modules.conf
 docker cp configs/config_voip/stasis.conf entreprise_voip:/etc/asterisk/stasis.conf
-#
+
+# Copie de la configuration du serveur LDAP
+docker cp configs/config_ldap/custom.ldif entreprise_ldap:/etc/ldap/custom.ldif
+
 ### --------------------------
 ### Lancement des scripts
 ### --------------------------
@@ -248,5 +253,8 @@ echo "[INFO] Conteneur Serveur VOIP créé et script de configuration lancé."
 cat scripts/script_routeur_public.sh | docker exec -i entreprise_routeur_public bash &
 echo "[INFO] Conteneur Routeur Public créé et script de configuration lancé."
 
+# Lancement du serveur ldap
+cat scripts/script_ldap.sh | docker exec -i entreprise_ldap bash &
+echo "[INFO] Conteneur Serveur LDAP créé et script de configuration lancé."
 
 echo "[INFO] Les IP et la configuration réseau des conteneurs sont gérées dans leurs scripts respectifs."
