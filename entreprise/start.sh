@@ -26,6 +26,8 @@ docker build -t routeur ./images/routeur
 # Build de l'image du serveur VoIP
 docker build -t voip_server ./images/voip
 
+docker build -t openldap-custom ./images/ldap
+
 ### --------------------------
 ### Création des conteneurs
 ### --------------------------
@@ -95,6 +97,15 @@ docker create -it \
     --privileged \
     routeur
 
+
+docker create -it \
+  --name entreprise_ldap \
+  -p 389:389 \
+  -p 636:636 \
+  -v ldap_data:/var/lib/ldap \
+  -v ldap_config:/etc/ldap/slapd.d \
+  openldap-custom
+
 ### --------------------------
 ### Démarrage des conteneurs
 ### --------------------------
@@ -123,6 +134,8 @@ docker start entreprise_routeur_public
 # Démarrage du serveur voip
 docker start entreprise_voip
 
+docker start entreprise_ldap
+
 ### --------------------------
 ### Ajouter namespace_docker
 ### --------------------------
@@ -142,6 +155,7 @@ addNetnsList entreprise_client1_${SERVICE_ID}
 addNetnsList entreprise_client2_${SERVICE_ID}
 addNetnsList entreprise_routeur_public
 addNetnsList entreprise_voip
+addNetnsList entreprise_ldap
 
 
 ### --------------------------
