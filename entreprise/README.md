@@ -2,7 +2,7 @@
 
 Le réseau de l'entreprise est constitué de :
 
-- Un sous-réseau avec les services de l'entreprise : **VoIP**, **DNS**, **serveur WEB**
+- Un sous-réseau avec les services de l'entreprise : **VoIP**, **DNS**, **serveur WEB** et **serveur LDAP**
 - Un sous-réseau (réplicable) avec des **machines utilisateurs** (ex : Service RH, Service Financier)
 - Un **serveur VPN** situé sur le routeur public, qui relie Internet au réseau interne
 - Trois routeurs portant les noms :
@@ -27,6 +27,7 @@ Le sous-réseau *Services* contient toutes les machines essentielles :
 | DNS (Bind9) | **192.168.49.18** | Résolution interne/externe |
 | Serveur Web (NGINX) | **192.168.49.20** | Héberge les sites interne et externe |
 | Serveur VoIP | **192.168.49.19** | Service téléphonie interne |
+| Serveur LDAP | **192.168.49.21 | Centraliser la gestion des comptes utilisateurs |
 
 Toutes les machines du réseau Services utilisent **des adresses IP fixes**, configurées dans leurs scripts de démarrage.
 
@@ -140,7 +141,6 @@ Il applique les règles suivantes :
 
 **Autorisé uniquement :**
 - Port **80/tcp** → serveur web (HTTP)
-- Port **53/udp/tcp** → serveur DNS
 
 Toutes les autres connexions entrantes sont **bloquées**.
 
@@ -159,6 +159,46 @@ Ainsi :
 - Internet ne peut pas initier de connexion vers le LAN
 
 ---
+
+## Serveur LDAP
+
+
+Le **serveur LDAP** est utilisé pour l’authentification centralisée et la gestion des annuaires.
+
+- **Adresse IP** : 192.168.49.21
+
+- **Base DN** : dc=site,dc=com
+
+- **Admin DN** : cn=admin,dc=site,dc=com
+
+### Tester le serveur LDAP
+```bash
+# Vérifier que le serveur LDAP répond
+ldapsearch -x -H ldap://192.168.49.21 -b "" -s base "(objectclass=*)"
+
+# Authentification en tant qu'admin
+ldapwhoami -x -H ldap://192.168.49.21 -D "cn=admin,dc=site,dc=lan" -w "votre_mot_de_passe_admin"
+
+# Lister tous les utilisateurs
+ldapsearch -x -H ldap://192.168.49.21 -b "dc=site,dc=lan" "(objectClass=person)"
+
+# Ajouter un nouvel utilisateur à partir d’un fichier LDIF
+ldapadd -x -H ldap://192.168.49.21 -D "cn=admin,dc=site,dc=lan" -w "votre_mot_de_passe_admin" -f nouvel_utilisateur.ldif
+```
+
+
+### Exemple de fichier nouvel_utilisateur.ldif
+```custom.ldif
+dn: uid=jdoe,ou=People,dc=site,dc=lan
+objectClass: inetOrgPerson
+uid: jdoe
+sn: Doe
+givenName: John
+cn: John Doe
+displayName: John Doe
+userPassword: motdepasse123
+mail: jdoe@site.lan
+```
 
 ## Résumé global
 
