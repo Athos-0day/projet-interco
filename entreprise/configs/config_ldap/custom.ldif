@@ -1,53 +1,22 @@
-# Base DN
-dn: dc=example,dc=com
-objectClass: top
-objectClass: domain
-dc: example
-
-# Organisation
+############################
+# OU People
+############################
 dn: ou=People,dc=example,dc=com
 objectClass: top
 objectClass: organizationalUnit
 ou: People
 
+############################
+# OU Groups
+############################
 dn: ou=Groups,dc=example,dc=com
 objectClass: top
 objectClass: organizationalUnit
 ou: Groups
 
-# Utilisateur 1 : John Doe
-dn: uid=jdoe,ou=People,dc=example,dc=com
-objectClass: inetOrgPerson
-objectClass: posixAccount
-objectClass: shadowAccount
-uid: jdoe
-sn: Doe
-givenName: John
-cn: John Doe
-displayName: John Doe
-uidNumber: 1001
-gidNumber: 100
-loginShell: /bin/bash
-homeDirectory: /home/jdoe
-userPassword: {SSHA}nKk1xk0l+7Jq3XYl8VwE6G3+FvQ=   # mot de passe "password1"
-
-# Utilisateur 2 : Alice Smith
-dn: uid=asmith,ou=People,dc=example,dc=com
-objectClass: inetOrgPerson
-objectClass: posixAccount
-objectClass: shadowAccount
-uid: asmith
-sn: Smith
-givenName: Alice
-cn: Alice Smith
-displayName: Alice Smith
-uidNumber: 1002
-gidNumber: 100
-loginShell: /bin/bash
-homeDirectory: /home/asmith
-userPassword: {SSHA}Vhj3/7Iqx6a7a2ueT2rJ+4/Dv0k=   # mot de passe "password2"
-
-# Groupe : staff
+############################
+# Groupe staff
+############################
 dn: cn=staff,ou=Groups,dc=example,dc=com
 objectClass: posixGroup
 cn: staff

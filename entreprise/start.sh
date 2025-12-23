@@ -218,6 +218,7 @@ docker cp configs/config_voip/stasis.conf entreprise_voip:/etc/asterisk/stasis.c
 
 # Copie de la configuration du serveur LDAP
 docker cp configs/config_ldap/custom.ldif entreprise_ldap:/etc/ldap/custom.ldif
+docker cp configs/config_ldap/users.ldif entreprise_ldap:/etc/ldap/users.ldif
 
 ### --------------------------
 ### Lancement des scripts

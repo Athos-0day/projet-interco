@@ -15,13 +15,10 @@ RUN apt-get update && \
         isc-dhcp-client \
         isc-dhcp-server \
         dnsutils \
-        ekiga \
+        slapd \
+        ldap-utils \
         alsa-utils \
-        pulse-audio \
-        dbus-x11 \ 
-        libcanberra-gtk-module \
-        libcanberra-gtk3-module \
-        slapd ldap-utils \
+        dbus-x11 \
         wget && \
     rm -rf /var/lib/apt/lists/*
 

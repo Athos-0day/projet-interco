@@ -13,6 +13,7 @@ LDAP_DOMAIN="example.com"
 LDAP_ADMIN_PASSWORD="adminpassword"
 LDAP_BASE_DN="dc=example,dc=com"
 LDIF_FILE="/etc/ldap/custom.ldif"
+LDIF_FILE_USERS="/etc/ldap/users.ldif"
 
 echo "[INFO] Activation de l'interface $LDAP_INTERFACE"
 ip link set $LDAP_INTERFACE up
@@ -55,6 +56,10 @@ chown openldap:openldap /var/run/slapd
 slapd -h "ldap://0.0.0.0" &
 sleep 10
 ldapadd -x -D "cn=admin,$LDAP_BASE_DN" -w $LDAP_ADMIN_PASSWORD -f $LDIF_FILE
-
+ldapadd -x -D "cn=admin,$LDAP_BASE_DN" -w $LDAP_ADMIN_PASSWORD -f $LDIF_FILE_USERS
+ldapadd -x -H ldap://192.168.49.21 \
+  -D "cn=admin,dc=example,dc=com" \
+  -w $LDAP_ADMIN_PASSWORD \
+  -f $LDIF_FILE_USERS
 ip route add default via 192.168.49.17            
 
