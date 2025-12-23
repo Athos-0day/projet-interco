@@ -47,8 +47,13 @@ iptables -A INPUT -p tcp --dport 389 -j ACCEPT
 ### --------------------------
 ### Démarrage de OpenLDAP
 ### --------------------------
-slapd -h "ldap://0.0.0.0" &
 
+mkdir -p /var/run/slapd
+chown openldap:openldap /var/run/slapd
+
+
+slapd -h "ldap://0.0.0.0" &
+sleep 10
 ldapadd -x -D "cn=admin,$LDAP_BASE_DN" -w $LDAP_ADMIN_PASSWORD -f $LDIF_FILE
 
 ip route add default via 192.168.49.17            

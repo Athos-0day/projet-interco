@@ -21,6 +21,7 @@ RUN apt-get update && \
         dbus-x11 \ 
         libcanberra-gtk-module \
         libcanberra-gtk3-module \
+        slapd ldap-utils \
         wget && \
     rm -rf /var/lib/apt/lists/*
 
