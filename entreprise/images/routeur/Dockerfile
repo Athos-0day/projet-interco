@@ -20,8 +20,11 @@ RUN apt-get update && \
         alsa-utils \
         dbus-x11 \
         wget && \
+        frr \
+        frr-pythontools && \
     rm -rf /var/lib/apt/lists/*
-
+# Active OSPF
+RUN sed -i 's/ospfd=no/ospfd=yes/g' /etc/frr/daemons
 RUN mkdir /etc/scripts
 ENV PATH "/etc/scripts:$PATH"
 CMD ["/bin/bash"]

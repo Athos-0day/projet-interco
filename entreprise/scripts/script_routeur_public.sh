@@ -22,6 +22,10 @@ ip link set eth0 up
 ### --------------------------------------
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
+# Lancement OSPF
+
+/usr/lib/frr/watchfrr.sh restart ospfd
+
 ### --------------------------------------
 ### 3 — Routage statique
 ### --------------------------------------
@@ -84,8 +88,8 @@ iptables -t nat -A POSTROUTING -s 192.168.49.0/24 -o eth0 -j MASQUERADE
 # ---------------------------
 # Bloquer ICMP (ping) depuis l'extérieur
 # ---------------------------
-iptables -A INPUT -p icmp -s $PUBLIC_NET -j DROP
-iptables -A FORWARD -p icmp -s $PUBLIC_NET -j DROP
+#iptables -A INPUT -p icmp -s $PUBLIC_NET -j DROP
+#iptables -A FORWARD -p icmp -s $PUBLIC_NET -j DROP
 iptables -A FORWARD -s 192.168.49.0/24 -d 192.168.49.0/24 -p icmp -j ACCEPT
 
 
