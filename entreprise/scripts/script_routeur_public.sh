@@ -14,7 +14,7 @@ ip link set br0 up
 ip addr add 192.168.49.1/28 dev br0   # réseau des routeurs
 
 # IP publique (exemple) sur eth0
-ip addr add 120.0.50.2/20 dev eth0
+ip addr add 120.0.34.2/24 dev eth0
 ip link set eth0 up
 
 ### --------------------------------------
@@ -69,10 +69,6 @@ WEB_IP="192.168.49.20"
 
 # Web HTTP
 iptables -A FORWARD -p tcp -s $PUBLIC_NET -d $WEB_IP --dport 80 -j ACCEPT
-
-# DNS (TCP + UDP)
-iptables -A FORWARD -p tcp -s $PUBLIC_NET -d $DNS_IP --dport 53 -j ACCEPT
-iptables -A FORWARD -p udp -s $PUBLIC_NET -d $DNS_IP --dport 53 -j ACCEPT
 
 # REFUSER tout autre trafic d'Internet vers le LAN
 iptables -A FORWARD -s $PUBLIC_NET -d 192.168.49.0/24 -j DROP
