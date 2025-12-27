@@ -39,10 +39,10 @@ ip route add 192.168.49.16/28 via 192.168.49.2   # routeur services
 
 echo "[INFO] Configuration du firewall"
 
-# Remise à zéro
-iptables -F
-iptables -t nat -F
-iptables -X
+# # Remise à zéro
+# iptables -F
+# iptables -t nat -F
+# iptables -X
 
 # # Stratégies par défaut
 # iptables -P INPUT DROP
@@ -50,19 +50,18 @@ iptables -X
 # iptables -P OUTPUT ACCEPT
 
 
-# ---------------------------
 # Autoriser le LAN interne
 # ---------------------------
-iptables -A INPUT -s 192.168.49.0/24 -j ACCEPT
-
-
-# ---------------------------
-# Autoriser loopback
-# ---------------------------
-iptables -A INPUT -i lo -j ACCEPT
-
-
-# ---------------------------
+# iptables -A INPUT -s 192.168.49.0/24 -j ACCEPT
+#
+#
+# # ---------------------------
+# # Autoriser loopback
+# # ---------------------------
+# iptables -A INPUT -i lo -j ACCEPT
+#
+#
+# # ---------------------------
 # Autoriser trafic entrant EXTERNE :
 # uniquement Web (80) et DNS (53)
 # ---------------------------
@@ -70,28 +69,47 @@ iptables -A INPUT -i lo -j ACCEPT
 PUBLIC_NET="120.0.32.0/20"
 DNS_IP="192.168.49.18"
 WEB_IP="192.168.49.20"
+LAN_NET="192.168.49.0/28"
+### --------------------------------------
+### 1 — Nettoyage et Politiques par défaut
+### --------------------------------------
+iptables -F
+iptables -t nat -F
+iptables -X
 
-# Web HTTP
-iptables -A FORWARD -p tcp -s $PUBLIC_NET -d $WEB_IP --dport 80 -j ACCEPT
+# On bloque tout par défaut (Sécurité)
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
 
-# REFUSER tout autre trafic d'Internet vers le LAN
-iptables -A FORWARD -s $PUBLIC_NET -d 192.168.49.0/24 -j DROP
+### --------------------------------------
+### 2 — Autorisations pour le Routeur lui-même (INPUT)
+### --------------------------------------
+iptables -A INPUT -i lo -j ACCEPT                             # Loopback
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT # Réponses aux requêtes du routeur
+iptables -A INPUT -p icmp -j ACCEPT                           # Autoriser le Ping sur le routeur
 
+### --------------------------------------
+### 3 — Port Forwarding & Flux Web (Externe -> Interne)
+### --------------------------------------
+# 1. Redirection NAT du port 80
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to-destination $WEB_IP:80
 
-# ---------------------------
-# NAT : masquerading
-# Pour permettre au LAN de sortir vers Internet
-# ---------------------------
-iptables -t nat -A POSTROUTING -s 192.168.49.0/24 -o eth0 -j MASQUERADE
+# 2. Autoriser le trafic forwardé pour le Web (uniquement port 80)
+iptables -A FORWARD -p tcp -d $WEB_IP --dport 80 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
+### --------------------------------------
+### 4 — Accès Sortant (Interne -> Système Autonome/Internet)
+### --------------------------------------
+# Autoriser tout le trafic qui vient de l'intérieur vers l'extérieur
+iptables -A FORWARD -s $LAN_NET -i br0 -j ACCEPT
 
-# ---------------------------
-# Bloquer ICMP (ping) depuis l'extérieur
-# ---------------------------
-#iptables -A INPUT -p icmp -s $PUBLIC_NET -j DROP
-#iptables -A FORWARD -p icmp -s $PUBLIC_NET -j DROP
-iptables -A FORWARD -s 192.168.49.0/24 -d 192.168.49.0/24 -p icmp -j ACCEPT
+# Autoriser le retour du trafic déjà établi (indispensable pour que le LAN reçoive les réponses)
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
+# NAT : Masquerade pour la sortie sur eth0
+iptables -t nat -A POSTROUTING -s $LAN_NET -o eth0 -j MASQUERADE
 
-
-echo "[INFO] Routeur public configuré avec firewall."
+echo "[OK] Firewall actif :"
+echo "     - Externe -> Interne : Port 80 uniquement"
+echo "     - Interne -> Externe : Autorisé (Accès SA/Internet)"echo "[INFO] Routeur public configuré avec firewall."
