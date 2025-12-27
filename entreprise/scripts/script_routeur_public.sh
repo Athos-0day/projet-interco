@@ -40,10 +40,10 @@ iptables -F
 iptables -t nat -F
 iptables -X
 
-# Stratégies par défaut
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT ACCEPT
+# # Stratégies par défaut
+# iptables -P INPUT DROP
+# iptables -P FORWARD DROP
+# iptables -P OUTPUT ACCEPT
 
 
 # ---------------------------
@@ -63,7 +63,7 @@ iptables -A INPUT -i lo -j ACCEPT
 # uniquement Web (80) et DNS (53)
 # ---------------------------
 
-PUBLIC_NET="120.0.48.0/20"
+PUBLIC_NET="120.0.32.0/20"
 DNS_IP="192.168.49.18"
 WEB_IP="192.168.49.20"
 

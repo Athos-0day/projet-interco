@@ -92,7 +92,7 @@ ip netns exec servicesA_switch ip link set router1 name eth1 netns fai_peService
 ../entreprise/start.sh RH
 
 addLink entreprise_routeur_public eth0 fai_peEntreprise  eth1
-
+echo "Réseau Entreprise connecté"
 
 # Ajouter les connexions Réseau d'acces Entreprise et réseau d'acces Service après le merge
 
