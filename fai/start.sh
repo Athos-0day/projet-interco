@@ -100,7 +100,7 @@ echo "Réseau Entreprise connecté"
 
 
 # On ajoute les fichiers de config aux dockers
-docker cp configs/dhcpd.conf fai_peParticulier:/etc/dhcp/
+docker cp configs/peParticulier/dhcpd.conf fai_peParticulier:/etc/dhcp/
 
 docker cp configs/peEntreprise/ospfd.conf fai_peEntreprise:/etc/frr/
 docker cp configs/peParticulier/ospfd.conf fai_peParticulier:/etc/frr/

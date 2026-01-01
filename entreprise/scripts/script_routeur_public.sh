@@ -24,7 +24,7 @@ echo 1 > /proc/sys/net/ipv4/ip_forward
 
 # Lancement OSPF
 
-/usr/lib/frr/watchfrr.sh restart ospfd
+/lib/frr/frrinit.sh  start
 
 ### --------------------------------------
 ### 3 — Routage statique
@@ -88,6 +88,7 @@ iptables -P OUTPUT ACCEPT
 iptables -A INPUT -i lo -j ACCEPT                             # Loopback
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT # Réponses aux requêtes du routeur
 iptables -A INPUT -p icmp -j ACCEPT                           # Autoriser le Ping sur le routeur
+iptables -A INPUT -p ospf -j ACCEPT                           # Autoriser les messages OSPF
 
 ### --------------------------------------
 ### 3 — Port Forwarding & Flux Web (Externe -> Interne)

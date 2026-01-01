@@ -221,7 +221,7 @@ docker cp configs/config_ldap/custom.ldif entreprise_ldap:/etc/ldap/custom.ldif
 docker cp configs/config_ldap/users.ldif entreprise_ldap:/etc/ldap/users.ldif
 
 # Copie du fichier de configuration ospd
-docker cp configs/config_routeur_public/ospfd.conf entreprise_routeur_entreprise:/etc/frr/
+docker cp configs/config_routeur_public/frr.conf entreprise_routeur_public:/etc/frr/
 
 ### --------------------------
 ### Lancement des scripts

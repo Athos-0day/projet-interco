@@ -12,13 +12,14 @@ CONTAINERS=(
     "entreprise_client1_*"
     "entreprise_client2_*"
     "entreprise_voip"
+    "entreprise_ldap"
 )
 
 # Arrêt + suppression
 for c in "${CONTAINERS[@]}"; do
     for instance in $(docker ps -a --format '{{.Names}}' | grep "$c"); do
         echo "[INFO] Arrêt de $instance..."
-        docker stop "$instance" >/dev/null 2>&1
+        docker kill "$instance" >/dev/null 2>&1
         docker rm "$instance" >/dev/null 2>&1
         echo "[INFO] $instance arrêté et supprimé."
 
