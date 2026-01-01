@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Lance un client SIP pour le voip
-APP_NAME="zoiper5"
+# On se place dans le répertoire du script
+cd "$(dirname "$0")"
 
-if ! command -v $APP_NAME >/dev/null 2>&1; then
-    echo "Erreur: $APP_NAME n'est pas installé ou pas dans le PATH."
-    echo "Vous pouvez l'installer sur https://www.zoiper.com/en/voip-softphone/download/current"
-    exit 1
+if [ ! -f "linphone.AppImage" ]; then
+    echo "Téléchargement de linphone..."
+    wget -O linphone.AppImage https://download.linphone.org/releases/linux/app/Linphone-5.3.0.AppImage
+    chmod "u+x" linphone.AppImage
 fi
 
 # Si on a le bon nombre d'arguments
@@ -43,8 +43,18 @@ cd "$(dirname "$0")"
 # On récupère le nom d'utilisateur
 LOCAL_USER=$(logname)
 
+# Fichier config
+HOME2=$(pwd)/configs/linphone/$CONTENEUR
+sudo -u $LOCAL_USER mkdir -p $HOME2/.local/share/
+
 # On lance le client SIP dans le namespace réseau du conteneur en temps qu'utilisitateur non root
-ip netns exec $CONTENEUR sudo -u $LOCAL_USER env PULSE_SERVER=unix:/run/user/$(id -u "$LOCAL_USER")/pulse/native $APP_NAME -c configs/$APP_NAME/$CONTENEUR &
+ip netns exec $CONTENEUR \
+    sudo -u $LOCAL_USER \
+    env PULSE_SERVER=unix:/run/user/$(id -u "$LOCAL_USER")/pulse/native \
+    env XDG_RUNTIME_DIR=/run/user/$(id -u "$LOCAL_USER") \
+    env HOME=$HOME2 \
+    dbus-run-session -- \
+    ./linphone.AppImage
 
 
 

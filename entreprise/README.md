@@ -167,8 +167,8 @@ Ainsi :
 
 ### Tester le serveur Asterisk
 
-Pour tester le serveur Asterisk, il faut un logiciel de Softphone sur la machine hôte. On utilise [zoiper5](https://www.zoiper.com/en/voip-softphone/download/current).
-Une fois le logiciel installé, on peut utiliser le script `voip.sh` pour démarrer des clients.
+Pour tester le serveur Asterisk, il faut un logiciel de Softphone sur la machine hôte. On utilise [linphone](https://www.linphone.org/en/download/#linphoneapp).
+On peut utiliser le script `voip.sh` pour démarrer des clients. Le script télécharge automatiquement un AppImage de linphone.
 
 Pour démarrer un client avec le numéro 1000 sur la machine entreprise_client1_RH :
 ```bash
