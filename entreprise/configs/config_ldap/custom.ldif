@@ -1,0 +1,25 @@
+############################
+# OU People
+############################
+dn: ou=People,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: People
+
+############################
+# OU Groups
+############################
+dn: ou=Groups,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: Groups
+
+############################
+# Groupe staff
+############################
+dn: cn=staff,ou=Groups,dc=example,dc=com
+objectClass: posixGroup
+cn: staff
+gidNumber: 100
+memberUid: jdoe
+memberUid: asmith

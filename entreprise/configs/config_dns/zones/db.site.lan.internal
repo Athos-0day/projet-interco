@@ -1,0 +1,16 @@
+$TTL 1h
+@   IN  SOA ns1.site.lan. admin.site.lan. (
+        2025022401 ;
+        1h
+        30m
+        1w
+        1h )
+
+    IN  NS ns1.site.lan.
+
+; adresse du dns
+ns1     IN  A   192.168.49.18
+
+; ----- Sites -----
+www     IN  A   192.168.49.20     ; page publique depuis le LAN
+intra   IN  A   192.168.49.20     ; page intranet sur le même serveur web

@@ -10,7 +10,7 @@ PARTICULIER_ID="A"
 cd "$(dirname "$0")"
 
 # Construction des images dockers
-docker build -t dhcp_debian ../images/dhcp_debian
+docker build -q -t dhcp_debian ../images/dhcp_debian
 
 # Construction des dockers
 docker create -it --name fai_particulierA --hostname fai_particulierA --network none --privileged dhcp_debian

@@ -1,0 +1,9 @@
+options {
+    directory "/etc/bind";
+    recursion yes;
+    allow-query { any; };
+    listen-on { any; };
+    listen-on-v6 { any; };
+    dnssec-validation no;
+};
+

@@ -1,0 +1,35 @@
+############################
+# Utilisateur John Doe
+############################
+dn: uid=jdoe,ou=People,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: jdoe
+sn: Doe
+givenName: John
+cn: John Doe
+displayName: John Doe
+uidNumber: 1001
+gidNumber: 100
+loginShell: /bin/bash
+homeDirectory: /home/jdoe
+userPassword: {SSHA}doV7YH91VdsTfglwidD4BoYv+UeJ3ELv
+
+############################
+# Utilisateur Alice Smith
+############################
+dn: uid=asmith,ou=People,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: asmith
+sn: Smith
+givenName: Alice
+cn: Alice Smith
+displayName: Alice Smith
+uidNumber: 1002
+gidNumber: 100
+loginShell: /bin/bash
+homeDirectory: /home/asmith
+userPassword: {SSHA}mfuGlvC3NNP9oe57OqwBHjxTdmNbHI0+
