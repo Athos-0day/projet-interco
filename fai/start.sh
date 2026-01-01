@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Script de démarrage du réseau FAI
-# Usage: sudo ./start.sh
-if [[ $EUID -ne 0 ]]; then
-    echo "Usage: sudo ./start.sh"
-    exit 1
+# On passe en root
+if [ "$EUID" -ne 0 ]; then
+    echo "Ce script nécessite les droits root pour fonctionner."
+    echo "Passage en mode root..."
+    exec sudo "$0" "$@"
 fi
 
 
