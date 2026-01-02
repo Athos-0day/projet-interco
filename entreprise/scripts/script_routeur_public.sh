@@ -123,7 +123,7 @@ echo "     - Interne -> Externe : Autorisé (Accès SA/Internet)"echo "[INFO] Ro
 openvpn --config /etc/openvpn/server.conf &
 
 # Initialisation du PKI du vpn
-make-cadir /etc/openvpn/easy-rsa/
+mkdir /etc/openvpn/easy-rsa
 cd /etc/openvpn/easy-rsa/
 ./easyrsa init-pki
 ./easyrsa build-ca nopass
@@ -142,7 +142,7 @@ EASYRSA_DIR="/etc/openvpn/easy-rsa"
 PKI_DIR="$EASYRSA_DIR/pki"
 OUTPUT_DIR="/home/client_ovpn"
 
-mkdir $OUTPUT_DIR
+mkdir -p "$OUTPUT_DIR"
 CLIENT_ID="test"
 echo "Création du certificat pour $CLIENT_ID"
 
@@ -154,13 +154,13 @@ cd $PKI_DIR
 # generation du fichier .ovpn a donner au client 
 cp /etc/openvpn/client.conf $OUTPUT_DIR/$CLIENT_ID.ovpn
 echo "<ca>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
-cat$PKI_DIR/ca.crt >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+cat $PKI_DIR/ca.crt >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 echo "</ca>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 echo "<cert>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 sed -n '/BEGIN CERTIFICATE/,/END CERTIFICATE/p' <$PKI_DIR/issued/$CLIENT_ID.crt >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 echo "</cert>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 echo "<key>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
-cat$PKI_DIR/private/$CLIENT_ID.key >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+cat $PKI_DIR/private/$CLIENT_ID.key >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 echo "</key>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 echo "<tls-auth>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 sed -n '/BEGIN OpenVPN Static key V1/,/END OpenVPN Static key V1/p' < /etc/openvpn/server/ta.key >> $OUTPUT_DIR/$CLIENT_ID.ovpn
