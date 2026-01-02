@@ -2,6 +2,8 @@ FROM debian:stable-slim
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        openvpn \
+        easy-rsa \
         iproute2 \
         iptables \
         apt-utils \

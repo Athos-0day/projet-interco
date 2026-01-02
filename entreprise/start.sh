@@ -189,6 +189,15 @@ addLink entreprise_client2_${SERVICE_ID} eth0 entreprise_routeur_bureau_${SERVIC
 ### Copie des fichiers de configuration
 ### --------------------------
 
+# copie des fichiers de configuration d'openVpn
+docker exec -it entreprise_routeur_public mkdir /etc/openvpn/auth
+docker cp configs/config_routeur_public/ldap.conf entreprise_routeur_public:/etc/openvpn/auth
+docker cp configs/config_routeur_public/server.conf entreprise_routeur_public:/etc/openvpn
+docker cp configs/config_routeur_public/client.conf entreprise_routeur_public:/etc/openvpn
+# # copie de l'executable pour la creation des clé d'openVpn
+# docker cp scripts/creation_cle_client.sh entreprise_routeur_public:/home
+
+
 # Copie des fichiers de configuration Bind
 docker cp configs/config_dns/named.conf entreprise_dns:/etc/bind/named.conf
 docker cp configs/config_dns/named.conf.local entreprise_dns:/etc/bind/named.conf.local
@@ -259,5 +268,9 @@ echo "[INFO] Conteneur Routeur Public créé et script de configuration lancé."
 # Lancement du serveur ldap
 cat scripts/script_ldap.sh | docker exec -i entreprise_ldap bash &
 echo "[INFO] Conteneur Serveur LDAP créé et script de configuration lancé."
+
+# creation des clées client vpn 
+# cat scripts/creation_cle_client.sh | docker exec -i entreprise_routeur_public bash &
+# echo "[INFO] Creation des clés clients pour le vpn"
 
 echo "[INFO] Les IP et la configuration réseau des conteneurs sont gérées dans leurs scripts respectifs."

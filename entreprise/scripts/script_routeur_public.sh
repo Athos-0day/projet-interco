@@ -114,3 +114,56 @@ iptables -t nat -A POSTROUTING -s $LAN_NET -o eth0 -j MASQUERADE
 echo "[OK] Firewall actif :"
 echo "     - Externe -> Interne : Port 80 uniquement"
 echo "     - Interne -> Externe : Autorisé (Accès SA/Internet)"echo "[INFO] Routeur public configuré avec firewall."
+
+### --------------------------------------
+### 5 — VPN 
+### --------------------------------------
+
+# demarage du vpn 
+openvpn --config /etc/openvpn/server.conf &
+
+# Initialisation du PKI du vpn
+make-cadir /etc/openvpn/easy-rsa/
+cd /etc/openvpn/easy-rsa/
+./easyrsa init-pki
+./easyrsa build-ca nopass
+./easyrsa build-server-full server nopass
+
+# generation des paramèters DH 
+./easyrsa gen-dh
+
+# Generation de la clef d'authentification TLS 
+openvpn --genkey secret /etc/openvpn/server/ta.key
+
+## Parametrage d'autentification -- fichier config copier lors de la creation du docker
+
+
+EASYRSA_DIR="/etc/openvpn/easy-rsa"
+PKI_DIR="$EASYRSA_DIR/pki"
+OUTPUT_DIR="/home/client_ovpn"
+
+mkdir $OUTPUT_DIR
+CLIENT_ID="test"
+echo "Création du certificat pour $CLIENT_ID"
+
+# creation de la clée 
+cd $PKI_DIR
+./easyrsa --batch build-client-full $CLIENT_ID
+
+
+# generation du fichier .ovpn a donner au client 
+cp /etc/openvpn/client.conf $OUTPUT_DIR/$CLIENT_ID.ovpn
+echo "<ca>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+cat$PKI_DIR/ca.crt >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+echo "</ca>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+echo "<cert>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+sed -n '/BEGIN CERTIFICATE/,/END CERTIFICATE/p' <$PKI_DIR/issued/$CLIENT_ID.crt >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+echo "</cert>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+echo "<key>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+cat$PKI_DIR/private/$CLIENT_ID.key >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+echo "</key>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+echo "<tls-auth>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+sed -n '/BEGIN OpenVPN Static key V1/,/END OpenVPN Static key V1/p' < /etc/openvpn/server/ta.key >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+echo "</tls-auth>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
+
+
