@@ -27,4 +27,6 @@ iptables -A INPUT -p udp --dport 10000:20000 -j ACCEPT
 ip route add default via 192.168.49.17            # sortie vers le routeur public
 echo "[INFO] Démarrage d'Asterisk"
 # Lancer Asterisk en avant-plan pour Docker
-asterisk -f -U asterisk
+echo "127.0.0.1 entreprise_voip" >> /etc/hosts
+echo "127.0.0.1 A.ROOT-SERVERS.NET" >> /etc/hosts
+asterisk -f

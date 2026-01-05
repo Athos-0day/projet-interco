@@ -1,2 +1,4 @@
 .DS_Store
 particulier/configs/client_ovpn/
+entreprise/linphone.AppImage
+entreprise/configs/linphone
