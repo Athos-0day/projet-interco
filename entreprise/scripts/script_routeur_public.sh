@@ -89,6 +89,7 @@ iptables -A INPUT -i lo -j ACCEPT                             # Loopback
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT # Réponses aux requêtes du routeur
 iptables -A INPUT -p icmp -j ACCEPT                           # Autoriser le Ping sur le routeur
 iptables -A INPUT -p ospf -j ACCEPT                           # Autoriser les messages OSPF
+iptables -A INPUT -p udp --dport 1194 -j ACCEPT               # Autoriser les connexions vpn
 
 ### --------------------------------------
 ### 3 — Port Forwarding & Flux Web (Externe -> Interne)
@@ -108,6 +109,9 @@ iptables -A FORWARD -s $LAN_NET -i br0 -j ACCEPT
 # Autoriser le retour du trafic déjà établi (indispensable pour que le LAN reçoive les réponses)
 iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
+# Autoriser le traffic provenant du tunnel vpn
+iptables -A FORWARD -s 10.99.0.0/24 -j ACCEPT
+
 # NAT : Masquerade pour la sortie sur eth0
 iptables -t nat -A POSTROUTING -s $LAN_NET -o eth0 -j MASQUERADE
 
@@ -119,18 +123,26 @@ echo "     - Interne -> Externe : Autorisé (Accès SA/Internet)"echo "[INFO] Ro
 ### 5 — VPN 
 ### --------------------------------------
 
-# demarage du vpn 
-openvpn --config /etc/openvpn/server.conf &
-
 # Initialisation du PKI du vpn
-mkdir /etc/openvpn/easy-rsa
+export EASYRSA_BATCH=1
+make-cadir /etc/openvpn/easy-rsa
 cd /etc/openvpn/easy-rsa/
 ./easyrsa init-pki
 ./easyrsa build-ca nopass
 ./easyrsa build-server-full server nopass
 
 # generation des paramèters DH 
-./easyrsa gen-dh
+#./easyrsa gen-dh # Trop long dans un docker sans entropie
+cat > pki/dh.pem <<'EOF'
+-----BEGIN DH PARAMETERS-----
+MIIBDAKCAQEAqiWdTajiVhusVuOyejpfIc03eqOACoE76bWm95ljOp/q1d6eJL9v
+iaKtH+iQT40hkMyYOHNlmkm1LgaBOwYhyO4roXkudNHM23sSRzSll+aqnp19qhcV
+lS4nuJHbXq3iOPlnJutl8iFrrksJYteH+tmzvmuW4NVA6qDi+cVrYtSpuSaujk4U
+50c+bDictXAsSmCGfVK5sqzm6r58SlZvAIQ92Yo/W7RUZliW1Dvmexln4lJDhDRm
+ZcDjDMCGl0PMH+HjJxHlhbNU9lUZHYWtmdwHD8GbtAQbUlmKgF+NzqlbpPJWVVff
+hB4ufBQtLeYjq+M1oX0mEPa+YyS+In6NLwIBAgICAOE=
+-----END DH PARAMETERS-----
+EOF
 
 # Generation de la clef d'authentification TLS 
 openvpn --genkey secret /etc/openvpn/server/ta.key
@@ -147,8 +159,8 @@ CLIENT_ID="test"
 echo "Création du certificat pour $CLIENT_ID"
 
 # creation de la clée 
-cd $PKI_DIR
-./easyrsa --batch build-client-full $CLIENT_ID
+cd $EASYRSA_DIR
+./easyrsa --batch build-client-full $CLIENT_ID nopass
 
 
 # generation du fichier .ovpn a donner au client 
@@ -166,4 +178,9 @@ echo "<tls-auth>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 sed -n '/BEGIN OpenVPN Static key V1/,/END OpenVPN Static key V1/p' < /etc/openvpn/server/ta.key >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 echo "</tls-auth>" >> $OUTPUT_DIR/$CLIENT_ID.ovpn
 
+# demarage du vpn 
+while ! openvpn --config /etc/openvpn/server.conf; do
+    echo "OpenVPN failed — retrying in 5 seconds..."
+    sleep 5
+done &
 

@@ -61,5 +61,12 @@ ldapadd -x -H ldap://192.168.49.21 \
   -D "cn=admin,dc=example,dc=com" \
   -w $LDAP_ADMIN_PASSWORD \
   -f $LDIF_FILE_USERS
-ip route add default via 192.168.49.17            
+ip route add default via 192.168.49.17 
+
+# On reset le password de jdoe à mdp
+ldappasswd -H ldap://192.168.49.21 \
+  -D "cn=admin,dc=example,dc=com" \
+  -w "adminpassword" \
+  -s "mdp" \
+  "uid=jdoe,ou=People,dc=example,dc=com"
 
