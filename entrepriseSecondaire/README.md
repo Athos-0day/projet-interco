@@ -1,56 +1,77 @@
-# Réseau de particulier
+# Réseau d'entreprise secondaire
 
-Un réseau de particulier est composé de :
-- Une box jouant le rôle de **serveur DHCP** permettant d'attribuer des adresses IP dynamiques aux machines de la LAN et de point d'accès via **NAT** vers le réseau  de l'opérateur.
-- De deux machines connectées à la box.
+Un réseau d'entreprise secondaire est composé de :
 
-Les réseaux de particuliers possède un identifiant (A,B,C,...) défini par l'utilisateur qui permet de les différenciers.
+* Un routeur/box jouant le rôle de **serveur DHCP** permettant d'attribuer des adresses IP dynamiques aux machines du LAN et assurant l'accès vers l'extérieur via **NAT**.
+* De plusieurs machines clientes connectées au routeur.
+
+Le fonctionnement global est **similaire au réseau de particulier**, à la différence suivante :
+
+* **Les machines clientes ne nécessitent pas d'identifiant de réseau lors de leur lancement**.
 
 Voici un schéma d'un réseau obtenu en faisant `./start.sh A`
-![](docs/ReseauParticulierSchema.png "Schema du réseau")
+![](docs/ReseauEntrepriseSecondaire.png "Schema du réseau")
+
+---
 
 ## Procédure de déploiement
 
-Dépendances :
- - Docker
+### Dépendances
 
-Pour démarrer un réseau de particulier A isolé :
+* Docker
+
+### Démarrage du réseau d'entreprise secondaire
+
+Pour démarrer un réseau d'entreprise secondaire isolé :
+
 ```bash
 chmod u+x ./start.sh
-./start.sh A
+./start.sh
 ```
 
-Pour démarrer un réseau de particulier A connecté à un routeur extérieur créé automatiquement regardez dans le dossier [tests](./tests).
+Contrairement au réseau de particulier, **aucun identifiant (A, B, C, …) n'est requis** pour lancer les machines clientes.
 
-Pour démarrer un réseau de particulier A connecté à un routeur extérieur R que vous avez préalablement créé :
-```bash
-chmod u+x ./start.sh
-./start.sh A R <interface à utilisée sur R>
-```
+### Arrêt du réseau
 
-Pour arrêter un réseau de particulier A :
+Pour arrêter le réseau d'entreprise secondaire :
+
 ```bash
 chmod u+x ./stop.sh
-./stop.sh A
+./stop.sh
 ```
+
+---
 
 ## Accès aux machines
 
-Les machines d'un réseau de particulier A ont les noms suivants :
-- `particulierA_box` pour la box
-- `particulierA_t1`
-- `particulierA_t2`
+Les machines du réseau d'entreprise secondaire portent les noms suivants :
 
-Pour ouvrir un terminal sur une machine d'un réseau de particulier A :
+* `entrepriseSecondaire_box` pour le routeur/box
+* `entrepriseSecondaire_t1`
+* `entrepriseSecondaire_t2`
+
+### Accès à un terminal
+
+Pour ouvrir un terminal sur une machine :
+
 ```bash
 docker exec -it nom_machine bash
 ```
 
-Pour ouvrir wireshark en tant qu'une machine du réseau (nécessite Wireshark installé sur l'hôte) :
+### Capture réseau avec Wireshark
+
+Pour ouvrir Wireshark depuis le namespace réseau d'une machine (Wireshark doit être installé sur l'hôte) :
+
 ```bash
 sudo ip netns exec nom_machine wireshark
 ```
 
+---
+
 ## Configuration
 
-Le **DHCP** est configuré dans le fichier [dhcpd.conf](./configs/dhcpd.conf) et le **NAT** est configuré dans [scrit_box.sh](./scripts/script_box.sh).
+* Le **serveur DHCP** est configuré dans le fichier [dhcpd.conf](./configs/dhcpd.conf).
+* Le **NAT** et les règles de routage sont configurés dans le script [script_box.sh](./scripts/script_box.sh).
+
+Les paramètres sont identiques à ceux du réseau de particulier, sauf indication contraire spécifique au réseau d'entreprise secondaire.
+
