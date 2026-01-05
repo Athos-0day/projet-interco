@@ -6,7 +6,7 @@
 # La box utilise DHCP et NAT
 
 # Si on a le bon nombre d'arguments
-if [ "$#" -ne 1 ] && [ "$#" -ne 3 ]; then
+if [ "$#" -ne 0 ] && [ "$#" -ne 2 ]; then
     echo "Usage: $0 [<conteneur routeur FAI> <interface routeur FAI>]"
     exit 1
 fi
@@ -26,7 +26,7 @@ docker create -it --name entrepriseSecondaire_t2 --hostname entrepriseSecondaire
 # Demarrage des dockers
 docker start entrepriseSecondaire_box
 docker start entrepriseSecondaire_t1
-docker start entrepriseSecondaire_t1
+docker start entrepriseSecondaire_t2
 
 # Ajout du namespace du container docker à la liste netns
 # https://stackoverflow.com/questions/31265993/docker-networking-namespace-not-visible-in-ip-netns-list
