@@ -160,6 +160,31 @@ Ainsi :
 
 ---
 
+## Serveur VOIP Asterisk
+
+- **Adresse IP** : 192.168.49.19
+- **Nom de domaine** : voip.site.lan
+
+### Tester le serveur Asterisk
+
+Pour tester le serveur Asterisk, il faut un logiciel de Softphone sur la machine hôte. On utilise [linphone](https://www.linphone.org/en/download/#linphoneapp).
+On peut utiliser le script `voip.sh` pour démarrer des clients. Le script télécharge automatiquement un AppImage de linphone.
+
+Pour démarrer un client avec le numéro 1000 sur la machine entreprise_client1_RH :
+```bash
+./voip.sh entreprise_client1_RH
+```
+
+Pour démarrer un client avec le numéro 1001 sur la machine entreprise_client2_RH :
+```bash
+./voip.sh entreprise_client2_RH
+```
+
+Il y a également 2 numéros de test :
+- `100` lance un audio "Hello World!"
+- `999` lance un appel en echo
+---
+
 ## Serveur LDAP
 
 
