@@ -1,6 +1,6 @@
 $TTL 1H
 @   IN  SOA dns.services.fai. admin.services.fai. (
-        2025021801 ; Serial
+        2025021803 ; Serial
         12h        ; Refresh
         15m        ; Retry
         3w         ; Expire
@@ -10,3 +10,5 @@ $TTL 1H
 dns     IN  A   120.0.32.66
 web     IN  A   120.0.32.67
 db      IN  A   120.0.32.68
+ldap    IN  A   120.0.32.69
+radius  IN  A   120.0.32.70

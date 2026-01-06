@@ -1,0 +1,4 @@
+testuser Cleartext-Password := "testpass"
+    Framed-IP-Address = 120.0.35.100,
+    MS-Primary-DNS-Server = 120.0.32.66,
+    MS-Secondary-DNS-Server = 120.0.32.67

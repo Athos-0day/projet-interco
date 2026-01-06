@@ -2,11 +2,6 @@
 
 # Script de démarrage du réseau FAI
 # On passe en root
-if [ "$EUID" -ne 0 ]; then
-    echo "Ce script nécessite les droits root pour fonctionner."
-    echo "Passage en mode root..."
-    exec sudo "$0" "$@"
-fi
 
 
 
@@ -55,8 +50,8 @@ addLink() {
 # == RESEAU ACCES PARTICULIER ==
 
 # Creation du switch particulier
-ip netns add fai_particulierSwitch 
-ip netns exec fai_particulierSwitch ip link add name br0 type bridge
+sudo ip netns add fai_particulierSwitch 
+sudo ip netns exec fai_particulierSwitch ip link add name br0 type bridge
 
 # Connexion des réseaux particuliers au switch
 ../particulier/start.sh A fai_particulierSwitch eth1
@@ -66,13 +61,13 @@ ip netns exec fai_particulierSwitch ip link add name br0 type bridge
 addLink fai_peParticulier eth1 fai_particulierSwitch eth0
 
 # Connexions des interfaces au bridge
-ip netns exec fai_particulierSwitch ip link set eth0 master br0
-ip netns exec fai_particulierSwitch ip link set eth1 master br0
-ip netns exec fai_particulierSwitch ip link set eth2 master br0
-ip netns exec fai_particulierSwitch ip link set eth0 up
-ip netns exec fai_particulierSwitch ip link set eth1 up
-ip netns exec fai_particulierSwitch ip link set eth2 up
-ip netns exec fai_particulierSwitch ip link set br0 up
+sudo ip netns exec fai_particulierSwitch ip link set eth0 master br0
+sudo ip netns exec fai_particulierSwitch ip link set eth1 master br0
+sudo ip netns exec fai_particulierSwitch ip link set eth2 master br0
+sudo ip netns exec fai_particulierSwitch ip link set eth0 up
+sudo ip netns exec fai_particulierSwitch ip link set eth1 up
+sudo ip netns exec fai_particulierSwitch ip link set eth2 up
+sudo ip netns exec fai_particulierSwitch ip link set br0 up
 
 # Backbone
 addLink fai_routeurToulouse eth0 fai_routeurBordeaux eth1
@@ -87,13 +82,13 @@ addLink fai_routeurParis eth4 fai_routeurBordeaux eth0
 
 # == RESEAU Service ==
 ../ServicesFAI/start.sh A
-ip netns exec servicesA_switch ip link set router1 name eth1 netns fai_peService
+sudo ip netns exec servicesA_switch ip link set router1 name eth1 netns fai_peService
 
 # == RESEAU Entreprise ==
-../entreprise/start.sh RH
+#../entreprise/start.sh RH
 
-addLink entreprise_routeur_public eth0 fai_peEntreprise  eth1
-echo "Réseau Entreprise connecté"
+#addLink entreprise_routeur_public eth0 fai_peEntreprise  eth1
+#echo "Réseau Entreprise connecté"
 
 # Ajouter les connexions Réseau d'acces Entreprise et réseau d'acces Service après le merge
 

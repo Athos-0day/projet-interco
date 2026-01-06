@@ -4,8 +4,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        nginx ldap-utils \
-        iproute2 iputils-ping net-tools curl \
+        freeradius freeradius-utils \
+        iproute2 iputils-ping net-tools \
     && rm -rf /var/lib/apt/lists/*
 
 CMD ["/bin/bash"]
