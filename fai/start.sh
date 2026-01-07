@@ -15,8 +15,12 @@ docker build -q -t frr ./images/frr
 #   $1: Nom du Docker
 #   $2: Nom de l'image utilisée
 dockerStart() {
+    local extra_args=""
+    if [ "$1" = "fai_peParticulier" ]; then
+        extra_args="-v /lib/modules:/lib/modules:ro"
+    fi
     # commenté "> /dev/null 2>&1" si vous voulez le nom de l'image
-    docker create -it --name $1 --hostname $1 --network none --privileged $2 > /dev/null 2>&1 
+    docker create -it --name $1 --hostname $1 --network none --privileged $extra_args $2 > /dev/null 2>&1 
     docker start $1
 
     # Ajout du namespace du container docker à la liste netns
@@ -97,6 +101,7 @@ sudo ip netns exec servicesA_switch ip link set router1 name eth1 netns fai_peSe
 
 # On ajoute les fichiers de config aux dockers
 docker cp configs/peParticulier/dhcpd.conf fai_peParticulier:/etc/dhcp/
+docker cp configs/peParticulier/accel-ppp.conf fai_peParticulier:/etc/accel-ppp.conf
 
 docker cp configs/peEntreprise/ospfd.conf fai_peEntreprise:/etc/frr/
 docker cp configs/peParticulier/ospfd.conf fai_peParticulier:/etc/frr/

@@ -10,6 +10,9 @@ ip route add default via 120.0.32.65
 # Résolution DNS interne pour éviter les timeouts
 printf "nameserver 120.0.32.66\noptions timeout:1 attempts:1\n" > /etc/resolv.conf
 
+# Active le module LDAP
+ln -sf /etc/freeradius/3.0/mods-available/ldap /etc/freeradius/3.0/mods-enabled/ldap
+
 # Démarrage FreeRADIUS (mode normal)
 freeradius
 

@@ -98,6 +98,8 @@ docker cp configs/db/60-bind.cnf         services${SERVICES_ID}_db:/etc/mysql/ma
 
 docker cp configs/radius/clients.conf    services${SERVICES_ID}_radius:/etc/freeradius/3.0/clients.conf
 docker cp configs/radius/users           services${SERVICES_ID}_radius:/etc/freeradius/3.0/mods-config/files/authorize
+docker cp configs/radius/mods-available/ldap services${SERVICES_ID}_radius:/etc/freeradius/3.0/mods-available/ldap
+docker cp configs/radius/sites-enabled/default services${SERVICES_ID}_radius:/etc/freeradius/3.0/sites-enabled/default
 
 # Démarrage des services
 cat scripts/script_dns.sh | docker exec -i services${SERVICES_ID}_dns bash &
