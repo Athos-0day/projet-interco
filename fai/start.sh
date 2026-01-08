@@ -117,15 +117,15 @@ docker cp configs/routeurToulouse/ospfd.conf fai_routeurToulouse:/etc/frr/
 
 # ================= Script de démarrage ======================
 # Execution d'un script sur les dockers
-docker exec -i fai_peEntreprise bash < scripts/peEntreprise.sh &
-docker exec -i fai_peParticulier bash < scripts/peParticulier.sh &
-docker exec -i fai_peService bash < scripts/peService.sh &
-docker exec -i fai_routeurBordeaux bash < scripts/routeurBordeaux.sh &
-docker exec -i fai_routeurBordure bash < scripts/routeurBordure.sh &
-docker exec -i fai_routeurLyon bash < scripts/routeurLyon.sh &
-docker exec -i fai_routeurParis bash < scripts/routeurParis.sh &
-docker exec -i fai_routeurToulouse bash < scripts/routeurToulouse.sh &
-
-
-
+docker exec -i fai_peEntreprise bash < scripts/peEntreprise.sh > /dev/null 2>&1 &
+docker exec -i fai_peParticulier bash < scripts/peParticulier.sh > /dev/null 2>&1 &
+docker exec -i fai_peService bash < scripts/peService.sh > /dev/null 2>&1 &
+docker exec -i fai_routeurBordeaux bash < scripts/routeurBordeaux.sh > /dev/null 2>&1 &
+docker exec -i fai_routeurBordure bash < scripts/routeurBordure.sh > /dev/null 2>&1 &
+docker exec -i fai_routeurLyon bash < scripts/routeurLyon.sh > /dev/null 2>&1 &
+docker exec -i fai_routeurParis bash < scripts/routeurParis.sh > /dev/null 2>&1 &
+docker exec -i fai_routeurToulouse bash < scripts/routeurToulouse.sh > /dev/null 2>&1 &
 echo "Le réseau FAI a été créé"
+
+wait
+echo "Tous les scripts ont été executé !"
