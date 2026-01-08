@@ -228,36 +228,36 @@ docker cp configs/config_routeur_public/frr.conf entreprise_routeur_public:/etc/
 ### --------------------------
 
 # Lancement du script DNS
-cat scripts/script_dns.sh | docker exec -i entreprise_dns bash &
+cat scripts/script_dns.sh | docker exec -i entreprise_dns bash > /dev/null 2>&1 &
 echo "[INFO] Conteneur DNS créé et script de configuration lancé."
 
 # Lancement du script Web
-cat scripts/script_web.sh | docker exec -i entreprise_web bash &
+cat scripts/script_web.sh | docker exec -i entreprise_web bash > /dev/null 2>&1 &
 echo "[INFO] Conteneur Web créé et script de configuration lancé."
 
 # Lancement du script Routeur Services
-cat scripts/script_routeur_services.sh | docker exec -i entreprise_routeur_services bash &
+cat scripts/script_routeur_services.sh | docker exec -i entreprise_routeur_services bash > /dev/null 2>&1 &
 echo "[INFO] Conteneur Routeur Services créé et script de configuration lancé."
 
 # Lancement du script Routeur Bureau
-cat scripts/script_routeur_bureau.sh | docker exec -i entreprise_routeur_bureau_${SERVICE_ID} bash &
+cat scripts/script_routeur_bureau.sh | docker exec -i entreprise_routeur_bureau_${SERVICE_ID} bash > /dev/null 2>&1 &
 echo "[INFO] Conteneur Routeur Bureau créé et script de configuration lancé."
 
 # Lancement des scripts Machine
-cat scripts/script_client.sh | docker exec -i entreprise_client1_${SERVICE_ID} bash &
-cat scripts/script_client.sh | docker exec -i entreprise_client2_${SERVICE_ID} bash &
+cat scripts/script_client.sh | docker exec -i entreprise_client1_${SERVICE_ID} bash > /dev/null 2>&1 &
+cat scripts/script_client.sh | docker exec -i entreprise_client2_${SERVICE_ID} bash > /dev/null 2>&1 &
 echo "[INFO] Conteneur Client 1 et 2 créé et script de configuration lancé."
 
 # Lancement du serveur voip
-cat scripts/script_voip.sh | docker exec -i entreprise_voip bash &
+cat scripts/script_voip.sh | docker exec -i entreprise_voip bash > /dev/null 2>&1 &
 echo "[INFO] Conteneur Serveur VOIP créé et script de configuration lancé."
 
 # Lancement du routeur public
-cat scripts/script_routeur_public.sh | docker exec -i entreprise_routeur_public bash &
+cat scripts/script_routeur_public.sh | docker exec -i entreprise_routeur_public bash > /dev/null 2>&1 &
 echo "[INFO] Conteneur Routeur Public créé et script de configuration lancé."
 
 # Lancement du serveur ldap
-cat scripts/script_ldap.sh | docker exec -i entreprise_ldap bash &
+cat scripts/script_ldap.sh | docker exec -i entreprise_ldap bash > /dev/null 2>&1 &
 echo "[INFO] Conteneur Serveur LDAP créé et script de configuration lancé."
 
 echo "[INFO] Les IP et la configuration réseau des conteneurs sont gérées dans leurs scripts respectifs."
