@@ -48,13 +48,15 @@ server default {
     }
 
     accounting {
-        noop
+        detail
+        unix
+        exec
     }
 
     session {
     }
 
     post-auth {
-        noop
+        reply_log
     }
 }

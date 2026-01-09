@@ -5,7 +5,7 @@ Ce dossier déploie quatre services du FAI dans des conteneurs Docker reliés pa
 - `WEB` : nginx.
 - `DB`  : MariaDB ouverte sur le réseau interne (Je sais pas vraiment comment ca fonctionne ce truc).
 - `LDAP` : OpenLDAP (base `dc=fai,dc=lab`).
-- `RADIUS` : FreeRADIUS (auth locale pour tests).
+- `RADIUS` : FreeRADIUS (auth LDAP + attributs de réponse).
 
 Le LAN interne utilise `120.0.32.64/28`
 L'hôte est relié au switch via l'interface `services<ID>_host` en `120.0.32.65` pour tests. On peut mettre un routeur à la place
@@ -26,10 +26,45 @@ Les adresses :
 - LDAP compte RADIUS : `docker exec -it servicesA_web ldapsearch -x -H ldap://120.0.32.69 -D "cn=admin,dc=fai,dc=lab" -w adminpass -b "cn=radius,ou=svc,dc=fai,dc=lab"`
 - LDAP clients : `docker exec -it servicesA_web ldapsearch -x -H ldap://120.0.32.69 -D "cn=admin,dc=fai,dc=lab" -w adminpass -b "ou=clients,dc=fai,dc=lab" "(|(uid=alice)(uid=bob))"`
 - RADIUS (depuis le PE Particulier `fai_peParticulier`) :
-  - Test ok : `docker exec -it fai_peParticulier radtest testuser testpass 120.0.32.70 0 peSecret123`
-  - Test ko : `docker exec -it fai_peParticulier radtest testuser wrongpass 120.0.32.70 0 peSecret123`
+  - Test ok : `docker exec -it fai_peParticulier radtest alice alicepass 120.0.32.70 0 peSecret123`
+  - Test ko : `docker exec -it fai_peParticulier radtest alice wrongpass 120.0.32.70 0 peSecret123`
   - Debug FreeRADIUS : `docker exec -it servicesA_radius freeradius -X`
   - Dans le test ok, vérifier `Access-Accept` et les attributs `Framed-IP-Address`, `MS-Primary-DNS-Server`, `MS-Secondary-DNS-Server`.
+
+## Step 6 - PPPoE + IP/DNS via RADIUS (IPCP)
+- Redémarrer RADIUS (si besoin) :
+  - `docker exec -it servicesA_radius pkill freeradius`
+  - `docker exec -it servicesA_radius freeradius`
+- Redémarrer accel-ppp (PE Particulier) :
+  - `docker exec -it fai_peParticulier pkill accel-pppd`
+  - `docker exec -it fai_peParticulier accel-pppd -c /etc/accel-ppp.conf &`
+- Sur une box abonnée (ex: `particulierA_box`) :
+  - `docker exec -it particulierA_box bash`
+  - `pkill dhclient || true`
+  - `ip link set eth0 up`
+  - `cat > /etc/ppp/peers/fai <<'EOF'
+user "alice"
+plugin rp-pppoe.so
+eth0
+noauth
+defaultroute
+persist
+mtu 1492
+mru 1492
+usepeerdns
+EOF`
+  - `echo 'alice * "alicepass"' > /etc/ppp/pap-secrets`
+  - `pppd call fai nodetach debug`
+- Vérifier l’IP WAN + DNS :
+  - `ip addr show ppp0`
+  - `cat /etc/ppp/resolv.conf`
+- Vérifier la connectivité (NAT toujours actif côté box) :
+  - `ping -c 2 120.0.35.1`
+  - `ping -c 2 120.0.32.66`
+  - `curl 120.0.32.67`
+- Logs utiles :
+  - FreeRADIUS : `docker exec -it servicesA_radius freeradius -X`
+  - PPP/accel-ppp : `docker exec -it fai_peParticulier tail -n 50 /var/log/accel-ppp/accel-ppp.log`
 
 ## fichiers de config:
 - Adapter la zone DNS dans `configs/dns/`.
