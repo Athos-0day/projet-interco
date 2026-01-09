@@ -112,11 +112,29 @@ fi
 if [ -n "$CLIENT_A_PASS" ]; then
     LDAP_ENV+=(-e CLIENT_A_PASS="$CLIENT_A_PASS")
 fi
+if [ -n "$CLIENT_A_IP" ]; then
+    LDAP_ENV+=(-e CLIENT_A_IP="$CLIENT_A_IP")
+fi
+if [ -n "$CLIENT_A_DNS1" ]; then
+    LDAP_ENV+=(-e CLIENT_A_DNS1="$CLIENT_A_DNS1")
+fi
+if [ -n "$CLIENT_A_DNS2" ]; then
+    LDAP_ENV+=(-e CLIENT_A_DNS2="$CLIENT_A_DNS2")
+fi
 if [ -n "$CLIENT_B_USER" ]; then
     LDAP_ENV+=(-e CLIENT_B_USER="$CLIENT_B_USER")
 fi
 if [ -n "$CLIENT_B_PASS" ]; then
     LDAP_ENV+=(-e CLIENT_B_PASS="$CLIENT_B_PASS")
+fi
+if [ -n "$CLIENT_B_IP" ]; then
+    LDAP_ENV+=(-e CLIENT_B_IP="$CLIENT_B_IP")
+fi
+if [ -n "$CLIENT_B_DNS1" ]; then
+    LDAP_ENV+=(-e CLIENT_B_DNS1="$CLIENT_B_DNS1")
+fi
+if [ -n "$CLIENT_B_DNS2" ]; then
+    LDAP_ENV+=(-e CLIENT_B_DNS2="$CLIENT_B_DNS2")
 fi
 
 cat scripts/script_ldap.sh | docker exec -i "${LDAP_ENV[@]}" services${SERVICES_ID}_ldap bash &

@@ -13,6 +13,12 @@ PPP_A_USER="alice"
 PPP_A_PASS="alicepass"
 PPP_B_USER="bob"
 PPP_B_PASS="bobpass"
+CLIENT_A_IP="120.0.35.100"
+CLIENT_B_IP="120.0.35.101"
+CLIENT_A_DNS1="120.0.32.66"
+CLIENT_B_DNS1="120.0.32.66"
+CLIENT_A_DNS2=""
+CLIENT_B_DNS2=""
 
 # Construction des images dockers
 docker build -q -t frr ./images/frr
@@ -92,7 +98,9 @@ addLink fai_routeurParis eth4 fai_routeurBordeaux eth0
 
 # == RESEAU Service ==
 CLIENT_A_USER="$PPP_A_USER" CLIENT_A_PASS="$PPP_A_PASS" \
+CLIENT_A_IP="$CLIENT_A_IP" CLIENT_A_DNS1="$CLIENT_A_DNS1" CLIENT_A_DNS2="$CLIENT_A_DNS2" \
 CLIENT_B_USER="$PPP_B_USER" CLIENT_B_PASS="$PPP_B_PASS" \
+CLIENT_B_IP="$CLIENT_B_IP" CLIENT_B_DNS1="$CLIENT_B_DNS1" CLIENT_B_DNS2="$CLIENT_B_DNS2" \
 ../ServicesFAI/start.sh A
 sudo ip netns exec servicesA_switch ip link set router1 name eth1 netns fai_peService
 

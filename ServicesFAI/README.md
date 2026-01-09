@@ -29,7 +29,7 @@ Les adresses :
   - Test ok : `docker exec -it fai_peParticulier radtest alice alicepass 120.0.32.70 0 peSecret123`
   - Test ko : `docker exec -it fai_peParticulier radtest alice wrongpass 120.0.32.70 0 peSecret123`
   - Debug FreeRADIUS : `docker exec -it servicesA_radius freeradius -X`
-  - Dans le test ok, vérifier `Access-Accept` et les attributs `Framed-IP-Address`, `MS-Primary-DNS-Server`, `MS-Secondary-DNS-Server`.
+  - Dans le test ok, vérifier `Access-Accept` et les attributs `Framed-IP-Address` et `MS-Primary-DNS-Server` (fournis par LDAP).
 
 ## PPPoE + IP/DNS via RADIUS (IPCP)
 - Redémarrer RADIUS (si besoin) :
@@ -66,7 +66,7 @@ EOF`
   - FreeRADIUS : `docker exec -it servicesA_radius freeradius -X`
   - PPP/accel-ppp : `docker exec -it fai_peParticulier tail -n 50 /var/log/accel-ppp/accel-ppp.log`
 
-## Accounting RADIUS (Start/Stop/Interim)
+## Accounting RADIUS 
 - Démarrer FreeRADIUS en debug :
   - `docker exec -it servicesA_radius pkill freeradius`
   - `docker exec -it servicesA_radius freeradius -X`
@@ -76,11 +76,8 @@ EOF`
 - Établir puis couper une session PPPoE (box) :
   - `docker exec -it particulierA_box pppd call fai nodetach debug`
   - Arrêt : `pkill pppd`
-- Vérifier les logs d’accounting (detail) :
+- Vérifier les logs d’accounting :
   - `docker exec -it servicesA_radius tail -n 50 /var/log/freeradius/radacct/120.0.33.41/detail`
-- Exemple d’entrées (attendu) :
-  - `Acct-Status-Type = Start` + `User-Name = "alice"` + `Framed-IP-Address = 120.0.35.100`
-  - `Acct-Status-Type = Stop` + `Acct-Session-Time = <secondes>`
 
 ## fichiers de config:
 - Adapter la zone DNS dans `configs/dns/`.

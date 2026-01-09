@@ -1,9 +1,1 @@
-alice
-    Framed-IP-Address = 120.0.35.100,
-    MS-Primary-DNS-Server = 120.0.32.66,
-    MS-Secondary-DNS-Server = 120.0.32.67
-
-bob
-    Framed-IP-Address = 120.0.35.101,
-    MS-Primary-DNS-Server = 120.0.32.66,
-    MS-Secondary-DNS-Server = 120.0.32.67
+# Reply attributes are now sourced from LDAP.

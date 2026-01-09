@@ -24,6 +24,12 @@ ldap {
         idle_timeout = 60
     }
 
+    update {
+        reply:Framed-IP-Address := 'faiFramedIPAddress'
+        reply:MS-Primary-DNS-Server := 'faiPrimaryDNS'
+        reply:MS-Secondary-DNS-Server := 'faiSecondaryDNS'
+    }
+
     # Ensure LDAP sets Auth-Type so authenticate{} uses the LDAP bind.
     set_auth_type = yes
 }

@@ -17,11 +17,11 @@ server default {
         mschap
         suffix
 
-        # Keep reply attributes in local files; auth comes from LDAP.
+        # Auth + reply attributes come from LDAP.
         files
         ldap
 
-        if (ok) {
+        if (ok || updated) {
             update control {
                 Auth-Type := LDAP
             }
