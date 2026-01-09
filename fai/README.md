@@ -10,6 +10,7 @@ Pour démarrer le reseau fai :
 chmod u+x ./start.sh
 ./start.sh
 ```
+Les identifiants PPP des boxes A/B sont codés en dur dans `start.sh`.
 
 Pour arrêter un réseau de particulier A :
 ```bash

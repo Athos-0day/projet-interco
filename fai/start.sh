@@ -8,6 +8,12 @@
 # On se place dans le répertoire du script
 cd "$(dirname "$0")"
 
+# Identifiants PPP pour les clients A/B (utilisés par les boxes)
+PPP_A_USER="alice"
+PPP_A_PASS="alicepass"
+PPP_B_USER="bob"
+PPP_B_PASS="bobpass"
+
 # Construction des images dockers
 docker build -q -t frr ./images/frr
 
@@ -58,8 +64,8 @@ sudo ip netns add fai_particulierSwitch
 sudo ip netns exec fai_particulierSwitch ip link add name br0 type bridge
 
 # Connexion des réseaux particuliers au switch
-../particulier/start.sh A fai_particulierSwitch eth1
-../particulier/start.sh B fai_particulierSwitch eth2
+../particulier/start.sh A "$PPP_A_USER" "$PPP_A_PASS" fai_particulierSwitch eth1
+../particulier/start.sh B "$PPP_B_USER" "$PPP_B_PASS" fai_particulierSwitch eth2
 
 # Connexion du switch au peParticulier
 addLink fai_peParticulier eth1 fai_particulierSwitch eth0
@@ -85,6 +91,8 @@ addLink fai_routeurParis eth3 fai_routeurLyon eth0
 addLink fai_routeurParis eth4 fai_routeurBordeaux eth0
 
 # == RESEAU Service ==
+CLIENT_A_USER="$PPP_A_USER" CLIENT_A_PASS="$PPP_A_PASS" \
+CLIENT_B_USER="$PPP_B_USER" CLIENT_B_PASS="$PPP_B_PASS" \
 ../ServicesFAI/start.sh A
 sudo ip netns exec servicesA_switch ip link set router1 name eth1 netns fai_peService
 

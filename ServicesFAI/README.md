@@ -31,7 +31,7 @@ Les adresses :
   - Debug FreeRADIUS : `docker exec -it servicesA_radius freeradius -X`
   - Dans le test ok, vérifier `Access-Accept` et les attributs `Framed-IP-Address`, `MS-Primary-DNS-Server`, `MS-Secondary-DNS-Server`.
 
-## Step 6 - PPPoE + IP/DNS via RADIUS (IPCP)
+## PPPoE + IP/DNS via RADIUS (IPCP)
 - Redémarrer RADIUS (si besoin) :
   - `docker exec -it servicesA_radius pkill freeradius`
   - `docker exec -it servicesA_radius freeradius`
@@ -65,6 +65,22 @@ EOF`
 - Logs utiles :
   - FreeRADIUS : `docker exec -it servicesA_radius freeradius -X`
   - PPP/accel-ppp : `docker exec -it fai_peParticulier tail -n 50 /var/log/accel-ppp/accel-ppp.log`
+
+## Accounting RADIUS (Start/Stop/Interim)
+- Démarrer FreeRADIUS en debug :
+  - `docker exec -it servicesA_radius pkill freeradius`
+  - `docker exec -it servicesA_radius freeradius -X`
+- (Re)lancer accel-ppp (PE Particulier) :
+  - `docker exec -it fai_peParticulier pkill accel-pppd`
+  - `docker exec -it fai_peParticulier accel-pppd -c /etc/accel-ppp.conf &`
+- Établir puis couper une session PPPoE (box) :
+  - `docker exec -it particulierA_box pppd call fai nodetach debug`
+  - Arrêt : `pkill pppd`
+- Vérifier les logs d’accounting (detail) :
+  - `docker exec -it servicesA_radius tail -n 50 /var/log/freeradius/radacct/120.0.33.41/detail`
+- Exemple d’entrées (attendu) :
+  - `Acct-Status-Type = Start` + `User-Name = "alice"` + `Framed-IP-Address = 120.0.35.100`
+  - `Acct-Status-Type = Stop` + `Acct-Session-Time = <secondes>`
 
 ## fichiers de config:
 - Adapter la zone DNS dans `configs/dns/`.

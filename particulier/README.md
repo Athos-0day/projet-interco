@@ -1,8 +1,9 @@
 # Réseau de particulier
 
 Un réseau de particulier est composé de :
-- Une box jouant le rôle de **serveur DHCP** permettant d'attribuer des adresses IP dynamiques aux machines de la LAN et de point d'accès via **NAT** vers le réseau  de l'opérateur.
-- De deux machines connectées à la box.
+- Une box jouant le rôle de **serveur DHCP** pour la LAN et de point d'accès via **NAT** vers le réseau de l'opérateur.
+- La box établit un **PPPoE** vers le FAI pour obtenir son IP WAN.
+- Deux machines connectées à la box.
 
 Les réseaux de particuliers possède un identifiant (A,B,C,...) défini par l'utilisateur qui permet de les différenciers.
 
@@ -14,10 +15,10 @@ Voici un schéma d'un réseau obtenu en faisant `./start.sh A`
 Dépendances :
  - Docker
 
-Pour démarrer un réseau de particulier A isolé :
+Pour démarrer un réseau de particulier A isolé (avec identifiants PPP en arguments) :
 ```bash
 chmod u+x ./start.sh
-./start.sh A
+./start.sh A alice alicepass
 ```
 
 Pour démarrer un réseau de particulier A connecté à un routeur extérieur créé automatiquement regardez dans le dossier [tests](./tests).
@@ -25,7 +26,7 @@ Pour démarrer un réseau de particulier A connecté à un routeur extérieur cr
 Pour démarrer un réseau de particulier A connecté à un routeur extérieur R que vous avez préalablement créé :
 ```bash
 chmod u+x ./start.sh
-./start.sh A R <interface à utilisée sur R>
+./start.sh A alice alicepass R <interface à utilisée sur R>
 ```
 
 Pour arrêter un réseau de particulier A :
@@ -53,4 +54,5 @@ sudo ip netns exec nom_machine wireshark
 
 ## Configuration
 
-Le **DHCP** est configuré dans le fichier [dhcpd.conf](./configs/dhcpd.conf) et le **NAT** est configuré dans [scrit_box.sh](./scripts/script_box.sh).
+Le **DHCP LAN** est configuré dans [dhcpd.conf](./configs/dhcpd.conf) et le **NAT** est configuré dans [script_box.sh](./scripts/script_box.sh).
+Lors du démarrage, `start.sh` demande un identifiant et un mot de passe PPP pour la box (utilisés par `pppd`).

@@ -105,7 +105,21 @@ docker cp configs/radius/sites-enabled/default services${SERVICES_ID}_radius:/et
 cat scripts/script_dns.sh | docker exec -i services${SERVICES_ID}_dns bash &
 cat scripts/script_web.sh | docker exec -i services${SERVICES_ID}_web bash &
 cat scripts/script_db.sh  | docker exec -i services${SERVICES_ID}_db  bash &
-cat scripts/script_ldap.sh | docker exec -i services${SERVICES_ID}_ldap bash &
+LDAP_ENV=()
+if [ -n "$CLIENT_A_USER" ]; then
+    LDAP_ENV+=(-e CLIENT_A_USER="$CLIENT_A_USER")
+fi
+if [ -n "$CLIENT_A_PASS" ]; then
+    LDAP_ENV+=(-e CLIENT_A_PASS="$CLIENT_A_PASS")
+fi
+if [ -n "$CLIENT_B_USER" ]; then
+    LDAP_ENV+=(-e CLIENT_B_USER="$CLIENT_B_USER")
+fi
+if [ -n "$CLIENT_B_PASS" ]; then
+    LDAP_ENV+=(-e CLIENT_B_PASS="$CLIENT_B_PASS")
+fi
+
+cat scripts/script_ldap.sh | docker exec -i "${LDAP_ENV[@]}" services${SERVICES_ID}_ldap bash &
 cat scripts/script_radius.sh | docker exec -i services${SERVICES_ID}_radius bash &
 
 echo "Réseau ServicesFAI ${SERVICES_ID} démarré (120.0.32.64/28)"

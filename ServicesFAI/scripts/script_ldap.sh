@@ -63,4 +63,30 @@ uid: bob
 userPassword: ${BOB_HASH}
 EOF
 
+add_client_user() {
+  local uid="$1"
+  local pass="$2"
+  if [ -z "$uid" ] || [ -z "$pass" ]; then
+    return
+  fi
+  if ldapsearch -x -H ldap://127.0.0.1 -D "cn=admin,dc=fai,dc=lab" -w "$ADMIN_PASS" \
+      -b "ou=clients,dc=fai,dc=lab" "(uid=$uid)" | grep -q "^dn: uid=${uid},"; then
+    echo "LDAP user ${uid} already exists"
+    return
+  fi
+  local hash
+  hash=$(slappasswd -s "$pass")
+  cat <<EOF | ldapadd -x -D "cn=admin,dc=fai,dc=lab" -w "$ADMIN_PASS"
+dn: uid=${uid},ou=clients,dc=fai,dc=lab
+objectClass: inetOrgPerson
+cn: ${uid}
+sn: ${uid}
+uid: ${uid}
+userPassword: ${hash}
+EOF
+}
+
+add_client_user "$CLIENT_A_USER" "$CLIENT_A_PASS"
+add_client_user "$CLIENT_B_USER" "$CLIENT_B_PASS"
+
 echo "LDAP up on 120.0.32.69:389 (base dc=fai,dc=lab)"
