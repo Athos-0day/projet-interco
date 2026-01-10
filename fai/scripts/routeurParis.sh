@@ -17,4 +17,11 @@ ip addr add 120.0.33.6/31 dev eth2
 ip addr add 120.0.33.8/31 dev eth3
 ip addr add 120.0.33.10/31 dev eth4
 
-/usr/lib/frr/watchfrr.sh restart ospfd
+# Autoriser le routage L3 et eviter les drops en cas de chemins asymetriques.
+sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv4.conf.all.rp_filter=0
+sysctl -w net.ipv4.conf.default.rp_filter=0
+
+/usr/lib/frr/watchfrr.sh restart zebra ospfd
+sleep 1
+vtysh -b /etc/frr/frr.conf

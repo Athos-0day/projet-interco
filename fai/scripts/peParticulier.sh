@@ -12,6 +12,7 @@ printf "120.0.33.41\t%s\n" "$(hostname)" >> /etc/hosts
 # Activer le routage pour relayer le trafic PPP vers le coeur
 sysctl -w net.ipv4.ip_forward=1
 sysctl -w net.ipv4.conf.all.rp_filter=0
+sysctl -w net.ipv4.conf.default.rp_filter=0
 
 # Modules nécessaires pour le shaper en mode police
 modprobe sch_ingress || true
@@ -29,4 +30,6 @@ mkdir -p /var/log
 accel-pppd -c /etc/accel-ppp.conf &
 
 
-/usr/lib/frr/watchfrr.sh restart ospfd
+/usr/lib/frr/watchfrr.sh restart zebra ospfd
+sleep 1
+vtysh -b /etc/frr/frr.conf
