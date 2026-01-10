@@ -28,6 +28,7 @@ ldap {
         reply:Framed-IP-Address := 'faiFramedIPAddress'
         reply:MS-Primary-DNS-Server := 'faiPrimaryDNS'
         reply:MS-Secondary-DNS-Server := 'faiSecondaryDNS'
+        reply:Filter-Id := 'faiRateLimit'
     }
 
     # Ensure LDAP sets Auth-Type so authenticate{} uses the LDAP bind.

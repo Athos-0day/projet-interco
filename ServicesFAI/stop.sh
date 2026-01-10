@@ -14,7 +14,7 @@ cd "$(dirname "$0")"
 sudo ip link delete services${SERVICES_ID}_host 2>/dev/null || true
 sudo ip netns delete services${SERVICES_ID}_switch 2>/dev/null || true
 
-for c in services${SERVICES_ID}_dns services${SERVICES_ID}_web services${SERVICES_ID}_db services${SERVICES_ID}_ldap services${SERVICES_ID}_radius; do
+for c in services${SERVICES_ID}_dns services${SERVICES_ID}_web services${SERVICES_ID}_db services${SERVICES_ID}_ldap services${SERVICES_ID}_radius services${SERVICES_ID}_iperf; do
     docker kill "$c" >/dev/null 2>&1 || true
     docker rm "$c"   >/dev/null 2>&1 || true
 done

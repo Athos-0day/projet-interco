@@ -6,6 +6,7 @@ Ce dossier déploie quatre services du FAI dans des conteneurs Docker reliés pa
 - `DB`  : MariaDB ouverte sur le réseau interne (Je sais pas vraiment comment ca fonctionne ce truc).
 - `LDAP` : OpenLDAP (base `dc=fai,dc=lab`).
 - `RADIUS` : FreeRADIUS (auth LDAP + attributs de réponse).
+- `IPERF` : iperf3 serveur de test.
 
 Le LAN interne utilise `120.0.32.64/28`
 L'hôte est relié au switch via l'interface `services<ID>_host` en `120.0.32.65` pour tests. On peut mettre un routeur à la place
@@ -16,10 +17,12 @@ Les adresses :
 - DB  : `120.0.32.68:3306` (`db.services.fai`, user `service` / `servicepass`)
 - LDAP: `120.0.32.69:389` (`ldap.services.fai`)
 - RADIUS: `120.0.32.70:1812/1813` (`radius.services.fai`)
+- iPerf3: `120.0.32.71:5201` (`iperf.services.fai`)
 
 ## Vérifications:
 - Résolution DNS : `dig @120.0.32.66 web.services.fai`
 - Site web : `curl 120.0.32.67`
+- iPerf3 : `iperf3 -c 120.0.32.71 -t 5`
 - Base de données : `mariadb -h 120.0.32.68 -uservice -pservicepass -e "SHOW DATABASES;"`(tkt)
 - LDAP base DN : `docker exec -it servicesA_web ldapsearch -x -H ldap://120.0.32.69 -D "cn=admin,dc=fai,dc=lab" -w adminpass -b "dc=fai,dc=lab" -s base`
 - LDAP OUs : `docker exec -it servicesA_web ldapsearch -x -H ldap://120.0.32.69 -D "cn=admin,dc=fai,dc=lab" -w adminpass -b "dc=fai,dc=lab" "(objectClass=organizationalUnit)"`
@@ -30,6 +33,15 @@ Les adresses :
   - Test ko : `docker exec -it fai_peParticulier radtest alice wrongpass 120.0.32.70 0 peSecret123`
   - Debug FreeRADIUS : `docker exec -it servicesA_radius freeradius -X`
   - Dans le test ok, vérifier `Access-Accept` et les attributs `Framed-IP-Address` et `MS-Primary-DNS-Server` (fournis par LDAP).
+
+## Limitation de bande passante par utilisateur (LDAP -> RADIUS -> accel-ppp)
+- LDAP stocke les attributs :
+  - `faiRateLimitDown` (kbit/s)
+  - `faiRateLimitUp` (kbit/s)
+- FreeRADIUS construit `Filter-Id = "<down>/<up>"`.
+- accel-ppp applique le shaper via `Filter-Id`.
+- Test :
+  - `iperf3 -c iperf.services.fai -t 10` (depuis une box)
 
 ## PPPoE + IP/DNS via RADIUS (IPCP)
 - Redémarrer RADIUS (si besoin) :

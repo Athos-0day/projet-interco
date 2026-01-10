@@ -12,3 +12,4 @@ web     IN  A   120.0.32.67
 db      IN  A   120.0.32.68
 ldap    IN  A   120.0.32.69
 radius  IN  A   120.0.32.70
+iperf   IN  A   120.0.32.71
