@@ -52,6 +52,31 @@ addLink() {
     sudo ip netns exec $1 ip link add $2 type veth peer name $4 netns $3
 }
 
+configureFrr() {
+    local container="$1"
+    docker exec -i "$container" sh -c '
+set -e
+for daemon in zebra ospfd mgmtd; do
+    if grep -q "^${daemon}=" /etc/frr/daemons; then
+        sed -i "s/^${daemon}=.*/${daemon}=yes/" /etc/frr/daemons
+    else
+        echo "${daemon}=yes" >> /etc/frr/daemons
+    fi
+done
+if grep -q "^vtysh_enable=" /etc/frr/daemons; then
+    sed -i "s/^vtysh_enable=.*/vtysh_enable=yes/" /etc/frr/daemons
+else
+    echo "vtysh_enable=yes" >> /etc/frr/daemons
+fi
+if [ -s /etc/frr/ospfd.conf ]; then
+    cp /etc/frr/ospfd.conf /etc/frr/frr.conf
+fi
+touch /etc/frr/zebra.conf /etc/frr/vtysh.conf
+chown frr:frr /etc/frr/*.conf /etc/frr/daemons
+chmod 640 /etc/frr/*.conf /etc/frr/daemons
+'
+}
+
 # == RESEAU ACCES PARTICULIER ==
 
 # Creation du switch particulier
@@ -112,6 +137,15 @@ docker cp configs/routeurBordure/ospfd.conf fai_routeurBordure:/etc/frr/
 docker cp configs/routeurLyon/ospfd.conf fai_routeurLyon:/etc/frr/
 docker cp configs/routeurParis/ospfd.conf fai_routeurParis:/etc/frr/
 docker cp configs/routeurToulouse/ospfd.conf fai_routeurToulouse:/etc/frr/
+
+configureFrr fai_peEntreprise
+configureFrr fai_peParticulier
+configureFrr fai_peService
+configureFrr fai_routeurBordeaux
+configureFrr fai_routeurBordure
+configureFrr fai_routeurLyon
+configureFrr fai_routeurParis
+configureFrr fai_routeurToulouse
 
 
 

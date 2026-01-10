@@ -17,4 +17,6 @@ ip addr add 120.0.33.6/31 dev eth2
 ip addr add 120.0.33.8/31 dev eth3
 ip addr add 120.0.33.10/31 dev eth4
 
-/usr/lib/frr/watchfrr.sh restart ospfd
+/usr/lib/frr/watchfrr.sh restart zebra ospfd
+sleep 1
+vtysh -b /etc/frr/frr.conf

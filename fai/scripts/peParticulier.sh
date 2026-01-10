@@ -11,4 +11,6 @@ touch /var/lib/dhcp/dhcpd.leases
 dhcpd -cf /etc/dhcp/dhcpd.conf eth1 &
 
 
-/usr/lib/frr/watchfrr.sh restart ospfd
+/usr/lib/frr/watchfrr.sh restart zebra ospfd
+sleep 1
+vtysh -b /etc/frr/frr.conf
