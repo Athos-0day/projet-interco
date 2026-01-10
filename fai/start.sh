@@ -106,9 +106,11 @@ docker cp configs/peParticulier/dhcpd.conf fai_peParticulier:/etc/dhcp/
 docker cp configs/peEntreprise/ospfd.conf fai_peEntreprise:/etc/frr/
 docker cp configs/peParticulier/ospfd.conf fai_peParticulier:/etc/frr/
 docker cp configs/peService/ospfd.conf fai_peService:/etc/frr/
-
 docker cp configs/routeurBordeau/ospfd.conf fai_routeurBordeaux:/etc/frr/
+
+docker cp configs/routeurBordure/bgpd.conf fai_routeurBordure:/etc/frr/
 docker cp configs/routeurBordure/ospfd.conf fai_routeurBordure:/etc/frr/
+
 docker cp configs/routeurLyon/ospfd.conf fai_routeurLyon:/etc/frr/
 docker cp configs/routeurParis/ospfd.conf fai_routeurParis:/etc/frr/
 docker cp configs/routeurToulouse/ospfd.conf fai_routeurToulouse:/etc/frr/
