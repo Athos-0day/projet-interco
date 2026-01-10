@@ -9,10 +9,10 @@ $TTL 1h
     IN NS ns1.site.lan.
 
 ; NS public (DNS exposé en public avec l'adresse du routeur)
-ns1     IN  A   120.0.50.2       ; IP publique du routeur 
+ns1     IN  A   120.0.34.2       ; IP publique du routeur 
 
 ; Site public visible depuis Internet -> IP publique du routeur
-www     IN  A   120.0.50.2
+www     IN  A   120.0.34.2
 
 ; Intranet : cacher à l'extérieur
 intra   IN  CNAME .              ; renvoie NXDOMAIN (n'existe pas depuis Internet)

@@ -2,3 +2,8 @@ zone "services.fai" {
     type master;
     file "/etc/bind/db.services.fai";
 };
+
+zone "site.lan" {
+    type master;
+    file "/etc/bind/db.site.lan";
+};

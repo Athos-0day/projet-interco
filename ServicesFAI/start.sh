@@ -78,6 +78,7 @@ addLinkToSwitch services${SERVICES_ID}_db  eth0 db0
 docker cp configs/dns/named.conf.options services${SERVICES_ID}_dns:/etc/bind/named.conf.options
 docker cp configs/dns/named.conf.local   services${SERVICES_ID}_dns:/etc/bind/named.conf.local
 docker cp configs/dns/db.services.fai    services${SERVICES_ID}_dns:/etc/bind/db.services.fai
+docker cp configs/dns/db.site.lan        services${SERVICES_ID}_dns:/etc/bind/db.site.lan
 
 docker cp configs/web/index.html         services${SERVICES_ID}_web:/var/www/html/index.html
 docker cp configs/web/site.conf          services${SERVICES_ID}_web:/etc/nginx/sites-available/default

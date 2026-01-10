@@ -1,13 +1,10 @@
 $TTL 1H
 @   IN  SOA dns.services.fai. admin.services.fai. (
-        2025021801 ; Serial
+        2026011001 ; Serial
         12h        ; Refresh
         15m        ; Retry
         3w         ; Expire
         2h )       ; Negative Cache TTL
 
 @       IN  NS  dns.services.fai.
-dns     IN  A   120.0.32.66
-web     IN  A   120.0.32.67
-db      IN  A   120.0.32.68
-
+www     IN  A   120.0.34.2
